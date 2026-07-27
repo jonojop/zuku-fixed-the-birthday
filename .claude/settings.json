@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm install *)",
+      "Bash(npm ci)",
+      "Bash(npm run *)",
+      "Bash(npm audit *)",
+      "Bash(npm view *)",
+      "Bash(npm --version)",
+      "Bash(npx tsc *)",
+      "Bash(npx eslint *)",
+      "Bash(npx vitest *)",
+      "Bash(npx playwright *)",
+      "Bash(npx vite *)",
+      "Bash(node scripts/sync-assets.mjs)",
+      "Bash(node --version)",
+      "Bash(git status)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git push *)",
+      "Bash(git remote *)",
+      "Bash(git --version)",
+      "Bash(gh --version)",
+      "Bash(gh auth status)",
+      "Bash(gh repo *)",
+      "Bash(gh workflow *)",
+      "Bash(gh run *)",
+      "Bash(gh api repos/*/pages*)"
+    ]
+  }
+}

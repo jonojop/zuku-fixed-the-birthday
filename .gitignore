@@ -1,0 +1,48 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Env / secrets
+.env
+.env.*
+
+# Personal/session-local Claude Code settings (accumulated permissions, not project config)
+.claude/settings.local.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# E2E screenshots are generated output, not source — regenerate with `npm run test:e2e`
+/preview/*.png
+
+# Personal source assets (never publish raw inputs)
+/assets-input/*
+!/assets-input/.gitkeep
+
+# Synced public assets are generated, but we DO want to publish recognized ones,
+# so public/assets is tracked; only the manifest is regenerated each run.
+
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
