@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useGameDispatch, useGameState } from '../context/GameContext'
 import { useAsset } from '../hooks/useAssetManifest'
-import { FINAL_CONTENT, SECRET_CONTENT } from '../content/gameContent'
+import { FINAL_CONTENT, ACHIEVEMENTS } from '../content/gameContent'
 import { ConsolePanel } from './ConsolePanel'
 import { ConfirmModal } from './ConfirmModal'
 import { SoundButton } from './SoundButton'
-import { playDeploySuccess, playTerminalBeep } from '../utils/sound'
+import { AchievementBadge } from './AchievementBadge'
+import { FinalBalloons } from './FinalBalloons'
+import { playDeployTick, playFinalCelebration, playTerminalBeep, startFinalAmbientMusic, stopFinalAmbientMusic } from '../utils/sound'
 import './FinalScreen.css'
 
 export function FinalScreen() {
@@ -20,7 +22,7 @@ export function FinalScreen() {
     if (state.skipAnimations) {
       setLines([...FINAL_CONTENT.deployLines, FINAL_CONTENT.deploySuccessful])
       setShowMessage(true)
-      playDeploySuccess()
+      playFinalCelebration()
       return
     }
     let i = 0
@@ -32,8 +34,11 @@ export function FinalScreen() {
         window.clearInterval(interval)
         window.setTimeout(() => {
           setLines((l) => [...l, FINAL_CONTENT.deploySuccessful])
-          playDeploySuccess()
-          window.setTimeout(() => setShowMessage(true), 900)
+          playDeployTick()
+          window.setTimeout(() => {
+            setShowMessage(true)
+            playFinalCelebration()
+          }, 900)
         }, 400)
       }
     }, 380)
@@ -41,8 +46,16 @@ export function FinalScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (!showMessage) return
+    startFinalAmbientMusic()
+    return () => stopFinalAmbientMusic()
+  }, [showMessage])
+
   return (
-    <div className="final-screen app-shell">
+    <div className={`final-screen app-shell${showMessage ? ' final-screen-dimmed' : ''}`}>
+      {showMessage && <FinalBalloons />}
+
       <div className="final-topbar row">
         <SoundButton />
       </div>
@@ -52,6 +65,7 @@ export function FinalScreen() {
 
         {showMessage && (
           <div className="final-reveal stack">
+            <div className="final-scrim" aria-hidden="true" />
             <h1 className="final-headline">{FINAL_CONTENT.headline}</h1>
             <p className="final-message">{FINAL_CONTENT.message}</p>
             <p className="final-achievement mono">{FINAL_CONTENT.achievement}</p>
@@ -62,21 +76,14 @@ export function FinalScreen() {
               </div>
             )}
 
-            <div className="final-icons" aria-hidden="true">
-              <span>⛩️</span>
-              <span>🌸</span>
-              <span>🏎️</span>
-              <span>🤾</span>
-              <span>🥧</span>
-              <span>🐾</span>
+            <div className="final-achievements" role="group" aria-label="Logros desbloqueados">
+              {ACHIEVEMENTS.map((a) => (
+                <AchievementBadge key={a.id} id={a.id} icon={a.icon} title={a.title} description={a.description} />
+              ))}
             </div>
 
             <div className="final-actions row">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => dispatch({ type: 'START_GAME' })}
-              >
+              <button type="button" className="btn btn-primary" onClick={() => dispatch({ type: 'START_GAME' })}>
                 REPLAY
               </button>
               <button type="button" className="btn btn-ghost" onClick={() => setConfirmResetOpen(true)}>
@@ -86,10 +93,17 @@ export function FinalScreen() {
 
             <button
               type="button"
-              className="btn-link final-secret-hint mono"
+              className="final-inspect-build mono"
               onClick={() => dispatch({ type: 'ENTER_SECRET' })}
+              aria-label="Inspect build — archivo sin trackear detectado"
             >
-              {SECRET_CONTENT.discoveryHints[0]}
+              <span className="final-inspect-arrow" aria-hidden="true">
+                ➜
+              </span>{' '}
+              1 untracked file detected
+              <span className="final-inspect-cursor" aria-hidden="true">
+                _
+              </span>
             </button>
           </div>
         )}
