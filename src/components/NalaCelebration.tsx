@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useAsset } from '../hooks/useAssetManifest'
 import { useGameState } from '../context/GameContext'
 import { NALA_MESSAGES } from '../content/gameContent'
@@ -18,12 +18,23 @@ export function NalaCelebration({ levelTitle, onContinue }: NalaCelebrationProps
   const loading = loadingPlaying || loadingNala
   const message = useMemo(() => NALA_MESSAGES[(state.levelsCompleted.length - 1 + NALA_MESSAGES.length) % NALA_MESSAGES.length], [state.levelsCompleted.length])
 
+  // The auto-advance timer and the manual "Continuar build" button both call
+  // onContinue — guard so a slow render (or a click landing right as the timer
+  // fires) can never dispatch ADVANCE_AFTER_CELEBRATION twice and skip a level.
+  const hasContinuedRef = useRef(false)
+  const continueOnce = useCallback(() => {
+    if (hasContinuedRef.current) return
+    hasContinuedRef.current = true
+    onContinue()
+  }, [onContinue])
+
   useEffect(() => {
     playNalaTransition()
     const duration = state.skipAnimations ? 200 : 2600
-    const timer = window.setTimeout(onContinue, duration)
+    const timer = window.setTimeout(continueOnce, duration)
     return () => window.clearTimeout(timer)
-  }, [onContinue, state.skipAnimations])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.skipAnimations])
 
   return (
     <div className="nala-celebration app-shell" role="status" aria-live="polite">
@@ -66,7 +77,7 @@ export function NalaCelebration({ levelTitle, onContinue }: NalaCelebrationProps
       <p className="nala-message mono">{message}</p>
       <p className="nala-sublabel">{levelTitle} — fix aprobado</p>
 
-      <button type="button" className="btn btn-gold" onClick={onContinue}>
+      <button type="button" className="btn btn-gold" onClick={continueOnce}>
         Continuar build
       </button>
     </div>

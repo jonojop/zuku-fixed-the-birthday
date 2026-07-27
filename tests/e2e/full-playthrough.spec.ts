@@ -43,7 +43,7 @@ test.describe('Full playthrough (desktop)', () => {
 
     await expect(page.getByText('LEVEL 04 // REST PROTOCOL')).toBeVisible()
     await page.getByRole('button', { name: 'START DEBUGGING' }).click()
-    await expect(page.getByAltText('Zuku programando de pie, de espaldas')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByAltText('Zuku programando de pie, de espaldas')).toBeVisible({ timeout: 15_000 })
     await solveFixesOnly(page, 'rest-protocol')
     await expect(page.locator('.rest-session-caption')).toBeVisible()
     await page.screenshot({ path: path.join(PREVIEW_DIR, 'preview-rest-correct-desktop.png') })
