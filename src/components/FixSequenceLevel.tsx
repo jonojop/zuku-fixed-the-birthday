@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useGameDispatch, useGameState } from '../context/GameContext'
 import { useFixSequence } from '../hooks/useFixSequence'
+import { playLevelComplete } from '../utils/sound'
 import { LEVEL_ORDER, type LevelDefinition } from '../types/game'
 import { LevelLayout } from './LevelLayout'
 import { SimulatedEditor } from './SimulatedEditor'
@@ -11,14 +12,17 @@ interface FixSequenceLevelProps {
   introLine: string
   scene: (opts: { fixIndex: number; isComplete: boolean }) => ReactNode
   onFixApplied?: (fixId: string) => void
+  /** Overrides the default "level complete" panel — e.g. Travel Route's Japan reveal. */
+  renderComplete?: (opts: { onProceed: () => void }) => ReactNode
 }
 
-export function FixSequenceLevel({ level, introLine, scene, onFixApplied }: FixSequenceLevelProps) {
+export function FixSequenceLevel({ level, introLine, scene, onFixApplied, renderComplete }: FixSequenceLevelProps) {
   const dispatch = useGameDispatch()
   const state = useGameState()
   const [log, setLog] = useState<string[]>([introLine])
 
   const handleAllComplete = useCallback(() => {
+    playLevelComplete()
     setLog((l) => [...l, level.completionTitle, level.completionSubtitle])
   }, [level])
 
@@ -56,8 +60,11 @@ export function FixSequenceLevel({ level, introLine, scene, onFixApplied }: FixS
           feedback={seq.feedback}
           hintVisible={seq.hintVisible}
           revealAnswer={seq.revealAnswer}
+          lastSubmittedId={seq.lastSubmittedId}
           onSubmit={seq.submit}
         />
+      ) : renderComplete ? (
+        renderComplete({ onProceed: () => dispatch({ type: 'COMPLETE_LEVEL', levelId: level.id }) })
       ) : (
         <div className="panel stack level-complete-panel">
           <p className="mono level-complete-title">{level.completionTitle}</p>

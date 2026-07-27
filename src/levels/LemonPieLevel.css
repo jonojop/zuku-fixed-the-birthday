@@ -6,9 +6,15 @@
   gap: var(--space-2);
 }
 
-.pie-illustration {
+.pie-stage {
+  position: relative;
   width: 100%;
   max-width: 340px;
+}
+
+.pie-illustration {
+  width: 100%;
+  display: block;
 }
 
 .pie-smoke circle {
@@ -27,50 +33,9 @@
   }
 }
 
-.pie-caption {
-  color: var(--terminal-green);
-  font-size: 0.8rem;
-}
-
-.lemon-counter {
-  color: var(--gold);
-}
-
-.candles-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
-  gap: 6px;
-}
-
-.candle-btn {
-  aspect-ratio: 1;
-  min-width: 30px;
-  min-height: 30px;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(248, 243, 231, 0.2);
-  background: rgba(9, 11, 19, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-.candle-flame {
-  width: 8px;
-  height: 12px;
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  background: rgba(248, 243, 231, 0.2);
-}
-
-.candle-btn-lit {
-  border-color: var(--gold);
-  background: rgba(214, 168, 75, 0.12);
-}
-
-.candle-btn-lit .candle-flame {
-  background: linear-gradient(180deg, #ffe08a, var(--red-jp));
-  box-shadow: 0 0 8px rgba(255, 200, 80, 0.8);
+.pie-candle-flame {
   animation: candle-flicker 0.6s ease-in-out infinite;
+  transform-origin: center bottom;
 }
 
 @keyframes candle-flicker {
@@ -81,6 +46,49 @@
   50% {
     transform: scaleY(1.15) scaleX(0.9);
   }
+}
+
+.pie-candle-out rect {
+  fill: #8a8a8a;
+}
+
+.pie-caption {
+  color: var(--terminal-green);
+  font-size: 0.8rem;
+}
+
+.lemon-counter {
+  color: var(--gold);
+}
+
+/* Invisible-until-tapped hotspots: a faint dashed marker before ignition (so the
+   26 targets stay discoverable/keyboard-focusable), fully hidden once lit since
+   the real candle graphic in the SVG takes over at that exact spot. */
+.pie-hotspots {
+  position: absolute;
+  inset: 0;
+}
+
+.pie-hotspot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px dashed rgba(248, 243, 231, 0.35);
+  background: rgba(9, 11, 19, 0.25);
+  padding: 0;
+}
+
+.pie-hotspot:hover:not(:disabled),
+.pie-hotspot:focus-visible {
+  border-color: var(--gold);
+  background: rgba(214, 168, 75, 0.2);
+}
+
+.pie-hotspot-lit {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .button-builder {
@@ -111,4 +119,11 @@
   margin-top: var(--space-2);
   font-size: 1rem;
   padding: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pie-candle-flame,
+  .pie-smoke circle {
+    animation: none;
+  }
 }

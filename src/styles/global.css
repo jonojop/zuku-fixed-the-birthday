@@ -9,7 +9,12 @@
   --terminal-green: #75f0a7;
 
   --font-mono: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* A bold/wide-tracked treatment of the same Latin display font for headlines —
+     a full CJK webfont (e.g. Zen Kaku Gothic New) would add megabytes of glyph
+     data for a UI that never actually renders Japanese script, so we fake the
+     "Japanese display type" feel with weight + letter-spacing instead. */
+  --font-jp: 'Space Grotesk', system-ui, sans-serif;
 
   --radius-md: 10px;
   --radius-lg: 18px;
@@ -57,7 +62,9 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-sans);
+  font-family: var(--font-jp);
+  font-weight: 700;
+  letter-spacing: 0.01em;
   margin: 0;
 }
 

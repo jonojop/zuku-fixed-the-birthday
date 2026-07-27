@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import type { FixDefinition } from '../types/game'
 import type { FixFeedback } from '../hooks/useFixSequence'
 import './SimulatedEditor.css'
@@ -8,23 +7,15 @@ interface SimulatedEditorProps {
   feedback: FixFeedback
   hintVisible: boolean
   revealAnswer: boolean
+  lastSubmittedId?: string | null
   onSubmit: (optionId: string) => void
 }
 
-function shuffled<T>(items: T[], seed: string): T[] {
-  const arr = [...items]
-  let hash = 0
-  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0
-  for (let i = arr.length - 1; i > 0; i--) {
-    hash = (hash * 1103515245 + 12345) >>> 0
-    const j = hash % (i + 1)
-    ;[arr[i], arr[j]] = [arr[j], arr[i]]
-  }
-  return arr
-}
-
-export function SimulatedEditor({ fix, feedback, hintVisible, revealAnswer, onSubmit }: SimulatedEditorProps) {
-  const options = useMemo(() => shuffled(fix.options, fix.id), [fix])
+export function SimulatedEditor({ fix, feedback, hintVisible, revealAnswer, lastSubmittedId, onSubmit }: SimulatedEditorProps) {
+  // Option order comes pre-computed from gameContent.ts (balanced correct-answer
+  // position, stable per fix) — never reshuffled here, so it never changes across
+  // re-renders or retries within the same attempt.
+  const options = fix.options
 
   return (
     <div className="simulated-editor panel">
@@ -39,11 +30,13 @@ export function SimulatedEditor({ fix, feedback, hintVisible, revealAnswer, onSu
       <ul className="editor-options" role="list">
         {options.map((opt) => {
           const isRevealed = revealAnswer && opt.correct
+          const isTarget = lastSubmittedId === opt.id && feedback !== 'idle'
+          const flashClass = isTarget ? (feedback === 'correct' ? ' editor-option-flash-correct' : ' editor-option-flash-incorrect') : ''
           return (
             <li key={opt.id}>
               <button
                 type="button"
-                className={`editor-option mono${isRevealed ? ' editor-option-reveal' : ''}`}
+                className={`editor-option mono${isRevealed ? ' editor-option-reveal' : ''}${flashClass}`}
                 onClick={() => onSubmit(opt.id)}
                 disabled={feedback === 'correct'}
               >
@@ -51,6 +44,11 @@ export function SimulatedEditor({ fix, feedback, hintVisible, revealAnswer, onSu
                   {'>'}
                 </span>
                 {opt.label}
+                {isTarget && (
+                  <span className="editor-option-mark" aria-hidden="true">
+                    {feedback === 'correct' ? '✓' : '✕'}
+                  </span>
+                )}
               </button>
             </li>
           )

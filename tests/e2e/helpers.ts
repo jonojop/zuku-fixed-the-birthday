@@ -28,7 +28,6 @@ export async function solveFixesOnly(page: Page, levelId: LevelId) {
     await page.getByRole('button', { name: correct.label, exact: true }).click()
     await page.waitForTimeout(150)
   }
-  await expect(page.getByRole('button', { name: 'Continuar build' })).toBeVisible()
 }
 
 /** Clicks through the level-complete panel and the Nala celebration that follows it. */

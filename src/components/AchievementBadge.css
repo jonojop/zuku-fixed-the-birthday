@@ -1,0 +1,70 @@
+.achievement-badge {
+  position: relative;
+  display: inline-flex;
+}
+
+.achievement-icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(248, 243, 231, 0.15);
+  background: rgba(9, 11, 19, 0.5);
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.achievement-icon-btn:hover,
+.achievement-icon-btn:focus-visible {
+  border-color: var(--gold);
+  background: rgba(214, 168, 75, 0.15);
+}
+
+.achievement-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  width: max-content;
+  max-width: min(220px, 70vw);
+  background: var(--bg-secondary);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  z-index: 20;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.achievement-tooltip-open {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.achievement-tooltip-title {
+  color: var(--gold);
+}
+
+.achievement-tooltip-desc {
+  color: rgba(248, 243, 231, 0.85);
+}
+
+@media (max-width: 480px) {
+  .achievement-tooltip {
+    max-width: 60vw;
+  }
+}

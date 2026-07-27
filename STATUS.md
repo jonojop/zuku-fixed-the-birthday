@@ -1,95 +1,123 @@
 # STATUS
 
-Última actualización: 2026-07-27.
+Última actualización: 2026-07-27 (Polish V2).
 
 ## Fase actual
 
-Completo. Las 9 fases están terminadas y el sitio está publicado y verificado en producción.
+Completo. Polish V2 terminado sobre la rama `polish-v2`, listo para integrar a `main` y volver a
+desplegar en el mismo GitHub Pages existente.
 
-## Fases terminadas
+## Fases terminadas (V1)
 
-1. Diagnóstico — carpeta, herramientas (node 24, npm 11, git 2.54, gh 2.96, gh autenticado como
-   `jonojop`), sin `ANTHROPIC_API_KEY` configurada. `assets-input/` tenía `mani.png.jpg` y
-   `zuku-animated.png.jpg` (ambas fotos estáticas JPEG, no animadas).
-2. Fundación — Vite + React + TypeScript, ESLint (flat config), Vitest + Testing Library, Playwright,
-   `vite.config.ts` con `base: '/zuku-fixed-the-birthday/'`.
-3. Sistema visual — paleta japonesa, fondo SVG (Fuji/torii/luna/sakura), componentes comunes
-   (LevelLayout, SimulatedEditor, ConsolePanel, ProgressBar, NalaCelebration, ConfirmModal,
-   SoundButton, SkipAnimationButton, BootScreen).
-4. Niveles — los 8 niveles jugables + nivel secreto `MANI_ARCHIVE` + pantalla final.
-5. Celebraciones — NalaCelebration integrada después de cada nivel (con fallback SVG cuando no hay
-   foto de Nala).
-6. Calidad — accesibilidad (foco visible, aria-live, prefers-reduced-motion + toggle manual, focus
-   trap en modales, todo resoluble con teclado), responsive (sin scroll horizontal en 1440/1366/1024/
-   768/390/360, verificado con capturas reales).
-7. Revisión visual — capturas generadas con Playwright, revisadas; se corrigió un bug real
-   encontrado en la revisión (el alerón del R33 flotaba desconectado de la carrocería — corregido
-   ancorándolo a un vértice conocido del path SVG y subiendo el contraste del cuerpo del auto).
-8. Documentación — README, ASSETS, CLAUDE, STATUS, FINAL_REPORT.
-9. Publicación — repo público creado, commits pusheados a `main`, GitHub Actions configurado y
-   verificado en verde, GitHub Pages activo con `build_type: workflow`, sitio público verificado
-   visualmente (screenshot + consola sin errores) en la URL real de producción.
-10. Rediseño de Rest Protocol — reemplazado el escenario propio (escritorio/monitor/silla en SVG) por
-    las dos ilustraciones reales `zuku-standing`/`zuku-sitting` entregadas (cada una ya es una escena
-    completa, silla incluida en `zuku-sitting`). Se eliminó por completo cualquier silla propia del
-    código. Los 5 fixes pasaron a ser `notifications`, `monitorBrightness`, `autoSave`, `breakTimer`
-    y `onBreakComplete`, mostrados en un HUD de estado; el 5º fix dispara el crossfade parado→sentado
-    y el mensaje "Work session completed".
+1–9. Ver el historial de commits previos a esta actualización: fundación técnica, sistema visual,
+los 8 niveles + secreto + final, celebraciones, accesibilidad/responsive, revisión visual, docs,
+publicación inicial en GitHub Pages, y el primer rediseño de Rest Protocol (2 estados).
+
+## Fases de Polish V2 (esta actualización)
+
+1. **Distribución equilibrada de respuestas** — `gameContent.ts` ahora calcula la posición de la
+   opción correcta con una secuencia balanceada determinista (`BALANCED_POSITIONS_BY_COUNT`,
+   consumida en orden de definición), en vez del shuffle hash-based anterior que tendía a dejar la
+   correcta al final. El shuffle en tiempo de render se sacó de `SimulatedEditor` — el orden ya viene
+   resuelto y estable desde el contenido. Test dedicado (`answerDistribution.test.ts`) verifica que
+   se usan las 4 posiciones, que la última no concentra mayoría, y que no se repite la misma posición
+   más de dos veces seguidas.
+2. **Sonido ampliado** — `sound.ts` reescrito con `playCorrect`, `playIncorrect`, `playDeployTick`,
+   `playLevelComplete`, `playNalaTransition`, `playEngineRev` (motor de 2.5s para el reveal del R33),
+   `playCandleIgnite`, `playCandlesBlow`, `playFinalCelebration`, `startFinalAmbientMusic`/
+   `stopFinalAmbientMusic` (loop pentatónico chill generado con osciladores, sin archivos de audio).
+   Cableado centralizado en `useFixSequence` (correct/incorrect) y `FixSequenceLevel`
+   (level-complete), por lo que los niveles 1, 2, 3, 5, 6 y 7 lo heredan automáticamente.
+3. **Assets nuevos** — `zuku-selfie`, `zuku-japan`, `nala-playing`, `nissan-r33`/`r33-reveal`
+   agregados a `sync-assets.mjs` + `useAssetManifest.ts` + `ASSETS.md`, con test de sincronización
+   actualizado.
+4. **Rest Protocol V3 (reemplaza la V2 de dos estados)** — ahora son 3 estados: A) `zuku-selfie` +
+   terminal de introducción + botón **START DEBUGGING**; B) `zuku-standing` durante los primeros 4
+   fixes (HUD de notifications/brightness/autoSave/breakTimer, sin rebote vertical — solo un
+   "breathing" de opacidad casi imperceptible); C) crossfade a `zuku-sitting` tras el 5º fix, con
+   "Work session completed" y el mensaje final de siempre. **Ninguna silla propia en ningún estado**
+   (verificado por test: cero elementos con clase que contenga "chair").
+5. **Nala** — prioriza `nala-playing` sobre `nala` sobre el SVG fallback; chapita "Nala" visible
+   también sobre la foto real; balanceo lateral + rebote suave (no se intentó un recorte de la cola
+   por Pillow: no había forma de verificar que saliera limpio sin análisis de imagen, así que se usó
+   el camino seguro que la propia spec habilita — animar la imagen completa en vez de arriesgar un
+   recorte defectuoso).
+6. **Level 1 Event Handler** — sello "DEPLOYED" animado + tick de sonido al completar.
+7. **Level 2 CSS Recovery** — indicador BEFORE/AFTER, línea de "inspector" que barre la tarjeta y
+   pulso verde en cada fix, transiciones con easing elástico (cubic-bezier con overshoot).
+8. **Level 3 First Match** — cancha de handball rediseñada de cero: rectangular horizontal, arco
+   izquierdo y arco derecho (nunca arriba/centro), áreas de 6m curvas, línea de 9m discontinua,
+   círculos "Jono" (rojo) y "Zuku" (rosa) que empiezan separados y se encuentran en el centro al
+   completar. Tests verifican arcos a izquierda/derecha, ausencia de arco superior, y las etiquetas
+   correctas (nunca "Zuzu"/"Suku").
+9. **Level 5 Travel Route** — tras los 4 fixes y "CONTINUE BUILD", escena intermedia cinematográfica
+   con `zuku-japan` ("Narita arrival confirmed. Japan build unlocked.") antes de continuar al nivel 6.
+10. **Level 6 Production Merge** — sin cambios de código: ya heredaba sonido/distribución/feedback
+    del motor compartido.
+11. **Level 7 Project R33** — tras los 5 fixes del SVG, reveal cinematográfico de la foto real
+    `nissan-r33` con resplandor de "faros" y sonido de motor generado con Web Audio API.
+12. **Level 8 Lemon Pie** — pie rediseñado con degradados/volumen/sombra de contacto/plato; las 26
+    velas ya no son un grid separado: aparecen físicamente sobre la torta en 26 posiciones
+    predeterminadas (3 anillos, generadas por fórmula determinista) a medida que se activan, cada una
+    con llama animada; BLOW CANDLES apaga las llamas pero las 26 velas (apagadas) y la torta siguen
+    visibles.
+13. **Pantalla final** — fondo se oscurece al revelar el mensaje, globos ascendentes (respetan
+    reduced-motion), tipografía (Space Grotesk local vía @fontsource, con tratamiento bold para
+    títulos — se descartó Zen Kaku Gothic New por agregar ~1.5MB de glifos CJK para un uso puramente
+    decorativo en texto latino), música ambiental chill + celebración sonora inicial, 9 logros con
+    tooltip accesible (hover/focus/click, posición auto-ajustada para no salirse de pantalla — bug
+    real encontrado y corregido durante la revisión visual mobile), botón "Inspect Build" con
+    estética de terminal y cursor parpadeante.
+14. **Capturas y revisión visual** — 21 capturas regeneradas (14 desktop + 10 mobile, algunas
+    reemplazan nombres de la v1). Se encontraron y corrigieron 2 bugs reales durante la revisión:
+    (a) el tooltip del primer logro se salía de pantalla en mobile — corregido con medición real vía
+    `getBoundingClientRect` y clamping dentro del viewport; (b) los globos finales usaban
+    `position: absolute` relativo a un contenedor más alto que el viewport, quedando fuera de vista —
+    corregido a `position: fixed`.
 
 ## Assets personales detectados
 
-| Clave | Archivo origen | Formato | ¿Animado? | Resultado |
-|---|---|---|---|---|
-| zuku-standing | `zuku-standing.webp.png` | PNG (1024×1024, ilustración completa) | No | Sincronizado a `public/assets/zuku-standing.png`, estado inicial del nivel Rest Protocol |
-| zuku-sitting | `zuku-sitting.webp.png` | PNG (1024×1024, ilustración completa, silla incluida) | No | Sincronizado a `public/assets/zuku-sitting.png`, estado final tras el 5º fix de Rest Protocol |
-| zuku-animated | `zuku-animated.png.jpg` | JPEG (1024×1024) | No (foto estática) | Sincronizado pero sin uso actual (superado por zuku-standing/zuku-sitting) |
-| zuku-character | — | — | — | No encontrado, no aplica |
-| nala | — | — | — | No encontrado, fallback SVG en uso |
-| mani | `mani.png.jpg` | JPEG (447×447) | No | Sincronizado a `public/assets/mani.jpg`, usado en MANI_ARCHIVE |
-| final-photo | — | — | — | No encontrado, fallback (no se muestra tarjeta) |
-| handball-photo | — | — | — | No encontrado, fallback (no se muestra tarjeta) |
+| Clave | Archivo origen | Resultado |
+|---|---|---|
+| zuku-selfie | `zuku-selfie.png` (copia con nombre correcto del archivo entregado, mal nombrado por la herramienta de generación) | Estado A de Rest Protocol |
+| zuku-standing | `zuku-standing.webp.png` | Estado B de Rest Protocol |
+| zuku-sitting | `zuku-sitting.webp.png` | Estado C de Rest Protocol (silla incluida en la foto) |
+| zuku-japan | `zuku-japan.png.png` | Reveal de Travel Route |
+| nala-playing | `nala-playing.png.png` | Celebración de Nala (prioridad sobre `nala`) |
+| nissan-r33 | `nissan-r33.png.jpg` | Reveal fotográfico de Project R33 |
+| mani | `mani.png.jpg` | MANI_ARCHIVE |
+| zuku-animated, zuku-character, nala, final-photo, handball-photo | no encontrados o sin uso actual | Fallbacks SVG/placeholder en uso |
 
 ## Último resultado de tests
 
-- `npm run lint` → 0 errores, 2 warnings esperables (react-refresh en el archivo de contexto, patrón
-  estándar).
-- `npm run test` (Vitest) → **35/35 tests pasando** (8 archivos: content, gameReducer, persistence,
-  BootScreen, LemonPieLevel, NalaCelebration, App, RestProtocolLevel — este último verifica
-  explícitamente que zuku-sitting solo aparece tras el 5º fix y que no existe ningún elemento con
-  clase que contenga "chair" en el render).
-- `npm run test:e2e` (Playwright, Chromium local) → **6/6 tests pasando**, incluyendo el playthrough
-  completo (8 niveles + secreto + reset) y las 5 capturas mobile.
-- `npm run build` → build exitoso (`dist/` ~244 KB JS, ~18 KB CSS antes de gzip).
+- `npm run lint` → 0 errores, 2 warnings esperables (react-refresh en `GameContext.tsx`).
+- `npm run test` (Vitest) → **57/57 tests pasando** en 15 archivos.
+- `npm run test:e2e` (Playwright) → **11/11 tests pasando** (playthrough desktop completo con todos
+  los reveals + 10 capturas mobile).
+- `npm run build` → build exitoso. CSS bajó de 466KB a 35KB (7.5KB gzip) tras sacar el webfont CJK
+  innecesario.
 
 ## Errores/advertencias pendientes (no bloqueantes)
 
-- `npm audit` reporta 5 vulnerabilidades "high" en una dependencia transitiva de ESLint
-  (`brace-expansion` vía `minimatch`/`@eslint/config-array`), un DoS de expresión regular. Es una
-  dependencia **solo de desarrollo** (ESLint nunca corre en producción ni procesa input de usuarios
-  reales) — riesgo real: nulo para este proyecto. `npm audit fix --force` requeriría subir ESLint a
-  la v10 (breaking change); no se aplicó para no arriesgar la configuración de lint sin necesidad real.
+- `npm audit`: mismas 5 vulnerabilidades "high" en una dependencia transitiva de ESLint
+  (`brace-expansion`), documentadas desde V1 — solo-dev, riesgo real nulo, no se fuerza el upgrade a
+  ESLint 10 sin necesidad concreta.
 
 ## Próximo paso exacto
 
-No queda ningún paso obligatorio pendiente. Posibles próximos pasos opcionales, si se quiere seguir
-iterando: agregar `zuku-character`, `nala`, `handball-photo` o `final-photo` a `assets-input/` para
-reemplazar sus fallbacks SVG (no requiere tocar código), o revisar los 5 warnings de `npm audit`
-(dependencia transitiva de ESLint, solo dev, ver abajo) si en algún momento se quiere subir ESLint a
-la v10.
+Merge de `polish-v2` a `main`, push, esperar el workflow de GitHub Actions y verificar la misma URL
+pública. Ningún otro paso obligatorio pendiente.
 
 ## Último commit
 
-`ci: configure GitHub Pages deployment` (fix de orden de steps incluido) — ver `git log` para el hash
-exacto; el repo remoto está actualizado hasta el mismo commit.
+Ver `git log` en la rama `polish-v2` — pendiente de merge a `main` en esta misma sesión.
 
 ## Estado de GitHub
 
-Repositorio público creado: https://github.com/jonojop/zuku-fixed-the-birthday — rama `main`
-pusheada, working tree limpio.
+Repositorio existente: https://github.com/jonojop/zuku-fixed-the-birthday. Se trabajó en la rama
+`polish-v2`; se integrará a `main` sin crear otro repositorio ni cambiar la URL pública.
 
 ## Estado del deploy
 
-**Publicado y verificado.** Workflow `Deploy to GitHub Pages` en verde (lint + tests unitarios +
-build + Playwright e2e + deploy). GitHub Pages activo (`build_type: workflow`). URL pública
-verificada con una captura real y sin errores de consola:
-https://jonojop.github.io/zuku-fixed-the-birthday/
+Pendiente de re-verificar tras el merge de `polish-v2` a `main` (mismo workflow, misma URL:
+https://jonojop.github.io/zuku-fixed-the-birthday/).

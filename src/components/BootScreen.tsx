@@ -5,7 +5,7 @@ import { BOOT_SEQUENCE, AUTH_SEQUENCE, PROJECT } from '../content/gameContent'
 import { ConsolePanel } from './ConsolePanel'
 import { ConfirmModal } from './ConfirmModal'
 import { SoundButton } from './SoundButton'
-import { playTerminalBeep, playDeploySuccess } from '../utils/sound'
+import { playTerminalBeep, playDeployTick } from '../utils/sound'
 import './BootScreen.css'
 
 export function BootScreen() {
@@ -38,7 +38,7 @@ export function BootScreen() {
   function handleStart(e: React.FormEvent) {
     e.preventDefault()
     setBooting(true)
-    playDeploySuccess()
+    playDeployTick()
     runBootSequence(() => dispatch({ type: 'START_GAME' }))
   }
 

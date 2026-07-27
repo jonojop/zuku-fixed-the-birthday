@@ -1,0 +1,61 @@
+.final-balloons {
+  /* Fixed to the viewport (not the scrolling final-screen container, which can grow
+     taller than 100vh) so the rise animation always plays across visible screen space. */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.final-balloon {
+  position: absolute;
+  bottom: -20%;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  opacity: 0.85;
+  animation-name: final-balloon-rise;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+.final-balloon::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  width: 1px;
+  height: 14px;
+  background: rgba(248, 243, 231, 0.3);
+}
+
+@keyframes final-balloon-rise {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(-60vh) translateX(20px);
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-120vh) translateX(-10px);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .final-balloon-desktop-only {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .final-balloons {
+    display: none;
+  }
+}

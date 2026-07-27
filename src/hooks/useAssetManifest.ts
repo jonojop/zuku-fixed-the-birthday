@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
 
 export type AssetKey =
+  | 'zuku-selfie'
   | 'zuku-standing'
   | 'zuku-sitting'
   | 'zuku-animated'
   | 'zuku-character'
+  | 'zuku-japan'
+  | 'nala-playing'
   | 'nala'
   | 'mani'
+  | 'nissan-r33'
   | 'final-photo'
   | 'handball-photo'
 

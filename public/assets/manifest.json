@@ -1,6 +1,13 @@
 {
-  "generatedAt": "2026-07-27T19:13:18.961Z",
+  "generatedAt": "2026-07-27T21:00:09.443Z",
   "assets": {
+    "zuku-selfie": {
+      "found": true,
+      "sourceFile": "zuku-selfie.png",
+      "publicPath": "assets/zuku-selfie.png",
+      "extension": ".png",
+      "animated": false
+    },
     "zuku-standing": {
       "found": true,
       "sourceFile": "zuku-standing.webp.png",
@@ -25,6 +32,20 @@
     "zuku-character": {
       "found": false
     },
+    "zuku-japan": {
+      "found": true,
+      "sourceFile": "zuku-japan.png.png",
+      "publicPath": "assets/zuku-japan.png",
+      "extension": ".png",
+      "animated": false
+    },
+    "nala-playing": {
+      "found": true,
+      "sourceFile": "nala-playing.png.png",
+      "publicPath": "assets/nala-playing.png",
+      "extension": ".png",
+      "animated": false
+    },
     "nala": {
       "found": false
     },
@@ -32,6 +53,13 @@
       "found": true,
       "sourceFile": "mani.png.jpg",
       "publicPath": "assets/mani.jpg",
+      "extension": ".jpg",
+      "animated": false
+    },
+    "nissan-r33": {
+      "found": true,
+      "sourceFile": "nissan-r33.png.jpg",
+      "publicPath": "assets/nissan-r33.jpg",
       "extension": ".jpg",
       "animated": false
     },

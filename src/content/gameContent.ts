@@ -42,13 +42,45 @@ export const NALA_MESSAGES: string[] = [
   'Todos los tests de cola pasaron.',
 ]
 
+// Deterministic, balanced correct-answer positions — never "always last", never more
+// than a single repeat of the same slot in a row. Computed once at module load (not
+// per render), keyed by how many options a fix has, and consumed in call order so the
+// distribution is stable across the whole game rather than random per fix.
+const BALANCED_POSITIONS_BY_COUNT: Record<number, number[]> = {
+  3: [2, 1, 3, 1, 3, 2],
+  4: [1, 4, 2, 3, 2, 1, 4, 3, 1, 3, 4, 2],
+}
+const positionCounters: Record<number, number> = {}
+
+function placeCorrectOption<T>(correct: T, incorrect: T[]): T[] {
+  const total = incorrect.length + 1
+  const sequence = BALANCED_POSITIONS_BY_COUNT[total]
+  let targetIndex: number
+  if (sequence) {
+    const counter = positionCounters[total] ?? 0
+    targetIndex = sequence[counter % sequence.length] - 1
+    positionCounters[total] = counter + 1
+  } else {
+    // No predefined sequence for this option count (e.g. 5) — a single occurrence
+    // can't be "unbalanced" on its own, so just avoid the first/last extremes.
+    targetIndex = Math.floor((total - 1) / 2)
+  }
+  const ordered = [...incorrect]
+  ordered.splice(targetIndex, 0, correct)
+  return ordered
+}
+
 function fix(id: string, prompt: string, hint: string, resultLabel: string, options: Array<[string, string, boolean]>): FixDefinition {
+  const correctTuple = options.find(([, , correct]) => correct)
+  if (!correctTuple) throw new Error(`Fix "${id}" has no correct option defined`)
+  const incorrectTuples = options.filter(([, , correct]) => !correct)
+  const ordered = placeCorrectOption(correctTuple, incorrectTuples)
   return {
     id,
     prompt,
     hint,
     resultLabel,
-    options: options.map(([optId, label, correct]) => ({ id: optId, label, correct })),
+    options: ordered.map(([optId, label, correct]) => ({ id: optId, label, correct })),
   }
 }
 
@@ -173,15 +205,27 @@ export const LEVELS: LevelDefinition[] = [
     completionSubtitle: 'Acá empezó todo.',
     fixes: [
       fix(
-        'goal-position',
-        'El arco está fuera de la cancha.',
-        'El arco tiene que estar centrado sobre la línea de fondo.',
-        'Arco reposicionado.',
+        'left-goal',
+        'El arco izquierdo está fuera de la cancha.',
+        'Tiene que estar centrado sobre la línea de fondo izquierda, mirando hacia adentro.',
+        'Arco izquierdo reposicionado.',
         [
-          ['correct', 'goal.position = "baseline-center";', true],
-          ['midfield', 'goal.position = "midfield";', false],
-          ['offcourt', 'goal.position = "off-court";', false],
-          ['bench', 'goal.position = "bench";', false],
+          ['correct', 'leftGoal.position = "left-baseline-center";', true],
+          ['midfield', 'leftGoal.position = "midfield-center";', false],
+          ['offcourt', 'leftGoal.position = "off-court";', false],
+          ['top', 'leftGoal.position = "top-center";', false],
+        ]
+      ),
+      fix(
+        'right-goal',
+        'El arco derecho y sus áreas están mal ubicados.',
+        'Tiene que estar centrado sobre la línea de fondo derecha, con las áreas curvas delante.',
+        'Arco derecho y áreas reposicionados.',
+        [
+          ['correct', 'rightGoal.position = "right-baseline-center";', true],
+          ['midfield', 'rightGoal.position = "midfield-center";', false],
+          ['offcourt', 'rightGoal.position = "off-court";', false],
+          ['bottom', 'rightGoal.position = "bottom-center";', false],
         ]
       ),
       fix(
@@ -197,21 +241,9 @@ export const LEVELS: LevelDefinition[] = [
         ]
       ),
       fix(
-        'players-position',
-        'Los dos jugadores están ubicados de forma imposible.',
-        'Tienen que estar dentro de la cancha, acercándose al centro.',
-        'Jugadores reubicados.',
-        [
-          ['correct', 'players.position = "center-court";', true],
-          ['stands', 'players.position = "stands";', false],
-          ['parking', 'players.position = "parking-lot";', false],
-          ['roof', 'players.position = "roof";', false],
-        ]
-      ),
-      fix(
         'start-match',
-        'El evento que arranca el partido no está conectado.',
-        'Falta enlazar el botón con la función que inicia el partido.',
+        'El evento que arranca el encuentro no está conectado.',
+        'Falta enlazar el silbato con la función que inicia el partido.',
         'Partido iniciado.',
         [
           ['correct', 'whistle.addEventListener("click", startMatch);', true],
@@ -236,7 +268,7 @@ export const LEVELS: LevelDefinition[] = [
         'notifications',
         'Las notificaciones no paran de llegar.',
         'Necesitás pausarlas, no dejarlas infinitas.',
-        'Notificaciones pausadas.',
+        'Interruptions paused.',
         [
           ['correct', 'notifications = "paused";', true],
           ['infinite', 'notifications = "infinite";', false],
@@ -248,7 +280,7 @@ export const LEVELS: LevelDefinition[] = [
         'brightness',
         'El monitor encandila. El brillo está al máximo.',
         'Bajalo a un nivel cómodo para los ojos.',
-        'Brillo ajustado.',
+        'Eye strain reduced.',
         [
           ['correct', 'monitorBrightness = 70;', true],
           ['max', 'monitorBrightness = 180;', false],
@@ -260,7 +292,7 @@ export const LEVELS: LevelDefinition[] = [
         'autosave',
         'El editor no está guardando nada solo.',
         'autoSave necesita pasar a true.',
-        'Auto-guardado activado.',
+        'Workspace safely committed.',
         [
           ['correct', 'autoSave = true;', true],
           ['false', 'autoSave = false;', false],
@@ -272,7 +304,7 @@ export const LEVELS: LevelDefinition[] = [
         'break-timer',
         'No existe ningún temporizador de descanso.',
         'breakTimer tiene que pasar a "enabled".',
-        'Temporizador de descanso activado.',
+        'Break sequence ready.',
         [
           ['correct', 'breakTimer = "enabled";', true],
           ['undefined', 'breakTimer = undefined;', false],
@@ -284,7 +316,7 @@ export const LEVELS: LevelDefinition[] = [
         'break-complete',
         'Cuando termina el descanso, el sistema sigue eligiendo seguir programando.',
         'onBreakComplete tiene que activar el modo descanso, no seguir codeando.',
-        'Sesión de trabajo completada.',
+        'Work session completed.',
         [
           ['correct', 'onBreakComplete = activateRestMode;', true],
           ['keepCoding', 'onBreakComplete = keepCoding;', false],
@@ -499,28 +531,51 @@ export const LEVELS: LevelDefinition[] = [
   },
 ]
 
+function orderedOptions(correct: [string, string], incorrect: Array<[string, string]>) {
+  const correctTuple: [string, string, boolean] = [correct[0], correct[1], true]
+  const incorrectTuples: Array<[string, string, boolean]> = incorrect.map(([id, label]) => [id, label, false])
+  return placeCorrectOption(correctTuple, incorrectTuples).map(([id, label, correct]) => ({ id, label, correct }))
+}
+
+export const REST_PROTOCOL_CONTENT = {
+  introLines: [
+    'Developer session detected.',
+    'Workload status: excessive.',
+    'Rest protocol: unavailable.',
+    'Five corrections required.',
+  ],
+  startButtonLabel: 'START DEBUGGING',
+  sessionCompletedCaption: 'Work session completed',
+}
+
 export const LEMON_PIE_CONTENT = {
   candlesOnlineLabel: (count: number) => `Candles online: ${count} / 26`,
   allCandlesOnline: 'All candles online.\nShutdown control missing.',
   buttonParts: {
-    text: [
-      { id: 'correct', label: 'BLOW CANDLES', correct: true },
-      { id: 'delete', label: 'DELETE CANDLES', correct: false },
-      { id: 'ignore', label: 'IGNORE', correct: false },
-      { id: 'log', label: "console.log('cake')", correct: false },
-    ],
-    event: [
-      { id: 'correct', label: 'onClick', correct: true },
-      { id: 'hover', label: 'onHover', correct: false },
-      { id: 'delete', label: 'onDelete', correct: false },
-      { id: 'scroll', label: 'onScroll', correct: false },
-    ],
-    action: [
-      { id: 'correct', label: 'extinguishAllCandles()', correct: true },
-      { id: 'reload', label: 'reloadPage()', correct: false },
-      { id: 'delete', label: 'deleteCake()', correct: false },
-      { id: 'add', label: 'addCandle()', correct: false },
-    ],
+    text: orderedOptions(
+      ['correct', 'BLOW CANDLES'],
+      [
+        ['delete', 'DELETE CANDLES'],
+        ['ignore', 'IGNORE'],
+        ['log', "console.log('cake')"],
+      ]
+    ),
+    event: orderedOptions(
+      ['correct', 'onClick'],
+      [
+        ['hover', 'onHover'],
+        ['delete', 'onDelete'],
+        ['scroll', 'onScroll'],
+      ]
+    ),
+    action: orderedOptions(
+      ['correct', 'extinguishAllCandles()'],
+      [
+        ['reload', 'reloadPage()'],
+        ['delete', 'deleteCake()'],
+        ['add', 'addCandle()'],
+      ]
+    ),
   },
   partLabels: {
     text: 'Texto del botón',
@@ -535,6 +590,18 @@ export const LEMON_PIE_CONTENT = {
   blowPrompt: 'Presioná el botón para apagar las velas.',
   blownMessage: 'Todas las velas apagadas. Deploy final desbloqueado.',
 }
+
+export const ACHIEVEMENTS: Array<{ id: string; icon: string; title: string; description: string }> = [
+  { id: 'event-handler', icon: '🖱️', title: 'System Starter', description: 'Arrancaste la build y devolviste el control al sistema.' },
+  { id: 'css-recovery', icon: '🎨', title: 'Interface Restorer', description: 'Convertiste el caos visual en una interfaz lista para producción.' },
+  { id: 'first-match', icon: '🤾', title: 'First Match', description: 'Recuperaste la cancha de handball donde empezó esta amistad.' },
+  { id: 'rest-protocol', icon: '🪑', title: 'Rest Mode', description: 'Recordaste que descansar también forma parte del progreso.' },
+  { id: 'travel-route', icon: '✈️', title: 'Japan Route', description: 'Dejaste preparada la ruta para todos los viajes que todavía faltan.' },
+  { id: 'production-merge', icon: '🔀', title: 'Identity Merge', description: 'Uniste a Nahuel y Zuku sin romper producción.' },
+  { id: 'project-r33', icon: '🏎️', title: 'Dream Build', description: 'Construiste el R33 pieza por pieza y encendiste su motor.' },
+  { id: 'lemon-pie-protocol', icon: '🥧', title: 'Twenty-Six Online', description: 'Encendiste 26 velas y completaste la última etapa de la build.' },
+  { id: 'nala', icon: '🐾', title: 'Nala Approved', description: 'Todos los fixes pasaron el control de calidad más importante.' },
+]
 
 export const SECRET_CONTENT = {
   levelName: 'MANI_ARCHIVE',
