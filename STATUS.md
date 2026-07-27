@@ -4,7 +4,7 @@
 
 ## Fase actual
 
-Fase 9 — Publicación (en curso).
+Completo. Las 9 fases están terminadas y el sitio está publicado y verificado en producción.
 
 ## Fases terminadas
 
@@ -25,7 +25,10 @@ Fase 9 — Publicación (en curso).
 7. Revisión visual — capturas generadas con Playwright, revisadas; se corrigió un bug real
    encontrado en la revisión (el alerón del R33 flotaba desconectado de la carrocería — corregido
    ancorándolo a un vértice conocido del path SVG y subiendo el contraste del cuerpo del auto).
-8. Documentación — README, ASSETS, CLAUDE, STATUS (este archivo).
+8. Documentación — README, ASSETS, CLAUDE, STATUS, FINAL_REPORT.
+9. Publicación — repo público creado, 8 commits pusheados a `main`, GitHub Actions configurado y
+   verificado en verde, GitHub Pages activo con `build_type: workflow`, sitio público verificado
+   visualmente (screenshot + consola sin errores) en la URL real de producción.
 
 ## Assets personales detectados
 
@@ -58,18 +61,25 @@ Fase 9 — Publicación (en curso).
 
 ## Próximo paso exacto
 
-Ejecutar la Fase 9 completa: revisar secretos, crear commits, crear el repositorio
-`zuku-fixed-the-birthday` en GitHub, push, configurar GitHub Actions + Pages, verificar el workflow y
-la URL pública. Actualizar este archivo y `FINAL_REPORT.md` con el resultado.
+No queda ningún paso obligatorio pendiente. Posibles próximos pasos opcionales, si se quiere seguir
+iterando: agregar `zuku-character`, `nala`, `handball-photo` o `final-photo` a `assets-input/` para
+reemplazar sus fallbacks SVG (no requiere tocar código), o revisar los 5 warnings de `npm audit`
+(dependencia transitiva de ESLint, solo dev, ver abajo) si en algún momento se quiere subir ESLint a
+la v10.
 
 ## Último commit
 
-Pendiente (repositorio git recién inicializado en esta fase).
+`ci: configure GitHub Pages deployment` (fix de orden de steps incluido) — ver `git log` para el hash
+exacto; el repo remoto está actualizado hasta el mismo commit.
 
 ## Estado de GitHub
 
-Repo aún no creado.
+Repositorio público creado: https://github.com/jonojop/zuku-fixed-the-birthday — rama `main`
+pusheada, working tree limpio.
 
 ## Estado del deploy
 
-Pendiente.
+**Publicado y verificado.** Workflow `Deploy to GitHub Pages` en verde (lint + tests unitarios +
+build + Playwright e2e + deploy). GitHub Pages activo (`build_type: workflow`). URL pública
+verificada con una captura real y sin errores de consola:
+https://jonojop.github.io/zuku-fixed-the-birthday/
