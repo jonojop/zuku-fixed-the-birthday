@@ -22,15 +22,19 @@ con extensión `.png`, `.webp`, `.gif`, `.jpg` o `.jpeg`:
 
 | Prefijo reconocido | Se usa en | Fallback si falta |
 |---|---|---|
-| `zuku-standing` | Nivel 04 — Rest Protocol, estado inicial (parado programando) | Placeholder de texto, sin silla ni escritorio dibujado |
-| `zuku-sitting` | Nivel 04 — Rest Protocol, estado final tras el quinto fix (sentado, con silla incluida en la propia foto) | Placeholder de texto |
-| `zuku-animated` o `zuku-character` | Sin uso actual (reservado; `zuku-standing`/`zuku-sitting` cubren el nivel 4) | — |
-| `nala` | Celebración de Nala después de cada nivel | Perro SVG alegre con chapita "Nala" |
+| `zuku-selfie` | Nivel 04 — Rest Protocol, estado A (introducción, Zuku mirando a cámara) | Placeholder de texto, o `zuku-standing` con otro encuadre |
+| `zuku-standing` | Nivel 04 — Rest Protocol, estado B (parado, primeros 4 fixes) | Placeholder de texto |
+| `zuku-sitting` | Nivel 04 — Rest Protocol, estado C (sentado, tras el 5º fix, silla incluida en la propia foto) | Placeholder de texto |
+| `zuku-animated` o `zuku-character` | Sin uso actual (reservado) | — |
+| `zuku-japan` | Nivel 05 — Travel Route, escena de llegada a Japón tras Narita | No se muestra escena intermedia, se pasa directo al nivel 6 |
+| `nala-playing` | Celebración de Nala después de cada nivel (prioridad sobre `nala`) | Ver `nala` |
+| `nala` | Celebración de Nala si no existe `nala-playing` | Perro SVG alegre con chapita "Nala" |
 | `mani` | Nivel secreto MANI_ARCHIVE (exclusivo, no aparece antes) | Placeholder "Waiting for mani.png" |
+| `nissan-r33` o `r33-reveal` | Nivel 07 — Project R33, revelación fotográfica final tras los 5 fixes | No se muestra revelación fotográfica, el SVG construido queda como resultado final |
 | `handball-photo` | Nivel 03 — First Match (recuerdo desbloqueado) | No se muestra ninguna foto, solo el texto |
 | `final-photo` | Pantalla final | No se muestra ninguna foto, solo el mensaje |
 
-Ejemplos válidos: `zuku-animated.png`, `zuku-animated.gif`, `mani.jpg`, `nala.webp`.
+Ejemplos válidos: `zuku-selfie.png`, `zuku-japan.gif`, `nala-playing.webp`, `nissan-r33.jpg`, `mani.jpg`.
 
 Si hay más de un archivo que matchea el mismo prefijo, se usa el primero en orden alfabético y se
 ignoran los demás (se registran en el manifiesto igual).
@@ -50,9 +54,11 @@ Nada fuera de esta lista de nombres se copia ni se publica: cualquier otro docum
 
 ## Notas sobre las fotos de Zuku (nivel 4 — Rest Protocol)
 
-`zuku-standing` y `zuku-sitting` son dos ilustraciones completas (escritorio, monitores, Nala y la
-vista al Fuji ya incluidos en la propia imagen), no recortes de personaje para componer sobre un
-fondo propio. Por eso el nivel **no dibuja ningún escritorio, monitor ni silla propios**: solo
-muestra estas dos imágenes con `object-fit: contain` y hace un crossfade entre ellas cuando se
-completa el quinto fix. La silla del estado final **ya está dentro de** `zuku-sitting` — el nivel no
-crea, anima ni superpone ninguna silla adicional.
+`zuku-selfie`, `zuku-standing` y `zuku-sitting` son tres ilustraciones completas e independientes
+(escritorio, monitores, Nala y la vista al Fuji ya incluidos en la propia imagen), no recortes de
+personaje para componer sobre un fondo propio. Por eso el nivel **no dibuja ningún escritorio,
+monitor ni silla propios**: solo muestra estas tres imágenes con `object-fit: contain`, cada una con
+su propia clase de encuadre (`.zukuSelfie` / `.zukuStanding` / `.zukuSitting`), y hace un crossfade
+entre ellas en dos transiciones (selfie→standing al presionar START DEBUGGING, standing→sitting tras
+el 5º fix). La silla del estado final **ya está dentro de** `zuku-sitting` — el nivel no crea, anima
+ni superpone ninguna silla adicional, en ningún estado.

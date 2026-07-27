@@ -13,12 +13,16 @@ const ALLOWED_EXT = new Set(['.png', '.webp', '.gif', '.jpg', '.jpeg'])
 
 // key -> prefix regex (case-insensitive, matches the start of the filename)
 const RECOGNIZED = {
+  'zuku-selfie': /^zuku-selfie/i,
   'zuku-standing': /^zuku-standing/i,
   'zuku-sitting': /^zuku-sitting/i,
   'zuku-animated': /^zuku-animated/i,
   'zuku-character': /^zuku-character/i,
-  nala: /^nala/i,
+  'zuku-japan': /^zuku-japan/i,
+  'nala-playing': /^nala-playing/i,
+  nala: /^nala(?!-playing)/i,
   mani: /^mani/i,
+  'nissan-r33': /^(nissan-r33|r33-reveal)/i,
   'final-photo': /^final-photo/i,
   'handball-photo': /^handball-photo/i,
 }
