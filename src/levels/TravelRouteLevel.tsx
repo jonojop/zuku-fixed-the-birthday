@@ -1,5 +1,9 @@
+import { useState } from 'react'
 import { LEVELS } from '../content/gameContent'
 import { FixSequenceLevel } from '../components/FixSequenceLevel'
+import { useGameDispatch } from '../context/GameContext'
+import { useAsset } from '../hooks/useAssetManifest'
+import { playDeployTick } from '../utils/sound'
 import './TravelRouteLevel.css'
 
 const level = LEVELS.find((l) => l.id === 'travel-route')!
@@ -47,12 +51,69 @@ function Scene({ fixIndex, isComplete }: { fixIndex: number; isComplete: boolean
   )
 }
 
+function JapanRevealScreen({ onContinue }: { onContinue: () => void }) {
+  const { url: japanPhoto } = useAsset('zuku-japan')
+
+  return (
+    <div className="japan-reveal app-shell">
+      <div className="japan-reveal-content stack">
+        <div className="japan-reveal-frame">
+          {japanPhoto ? (
+            <img src={japanPhoto} alt="Zuku recién llegado a Japón" className="japan-reveal-photo" />
+          ) : (
+            <div className="japan-reveal-placeholder mono" aria-hidden="true">
+              Zuku in Japan
+            </div>
+          )}
+        </div>
+
+        <p className="japan-reveal-message mono">
+          Narita arrival confirmed.
+          <br />
+          Japan build unlocked.
+        </p>
+
+        <button type="button" className="btn btn-primary" onClick={onContinue}>
+          Continuar build
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export function TravelRouteLevel() {
+  const dispatch = useGameDispatch()
+  const [showJapanReveal, setShowJapanReveal] = useState(false)
+
+  if (showJapanReveal) {
+    return (
+      <JapanRevealScreen
+        onContinue={() => dispatch({ type: 'COMPLETE_LEVEL', levelId: 'travel-route' })}
+      />
+    )
+  }
+
   return (
     <FixSequenceLevel
       level={level}
       introLine="La ruta de viaje hacia Japón está desconfigurada."
       scene={({ fixIndex, isComplete }) => <Scene fixIndex={fixIndex} isComplete={isComplete} />}
+      renderComplete={() => (
+        <div className="panel stack level-complete-panel">
+          <p className="mono level-complete-title">Narita arrival confirmed.</p>
+          <p className="level-complete-subtitle">Japan build unlocked.</p>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              playDeployTick()
+              setShowJapanReveal(true)
+            }}
+          >
+            CONTINUE BUILD
+          </button>
+        </div>
+      )}
     />
   )
 }

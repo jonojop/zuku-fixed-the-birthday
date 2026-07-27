@@ -25,6 +25,50 @@ describe('LemonPieLevel', () => {
     expect(candles).toHaveLength(CANDLE_COUNT)
   })
 
+  it('starts with zero candles physically on the pie, and adds them one by one as each is activated', async () => {
+    const user = userEvent.setup()
+    const { container } = render(
+      <GameProvider>
+        <LemonPieLevel />
+      </GameProvider>
+    )
+
+    expect(container.querySelectorAll('.pie-candle')).toHaveLength(0)
+
+    const candles = screen.getAllByRole('button', { name: /^Vela \d+/ })
+    for (let i = 0; i < 10; i++) {
+      await user.click(candles[i])
+      expect(container.querySelectorAll('.pie-candle')).toHaveLength(i + 1)
+    }
+
+    for (let i = 10; i < CANDLE_COUNT; i++) {
+      await user.click(candles[i])
+    }
+    expect(container.querySelectorAll('.pie-candle')).toHaveLength(CANDLE_COUNT)
+    expect(container.querySelectorAll('.pie-candle-flame')).toHaveLength(CANDLE_COUNT)
+  })
+
+  it('keeps all 26 candles on the pie after BLOW CANDLES, but with zero active flames', async () => {
+    const user = userEvent.setup()
+    const { container } = render(
+      <GameProvider>
+        <LemonPieLevel />
+      </GameProvider>
+    )
+
+    for (const candle of screen.getAllByRole('button', { name: /^Vela \d+/ })) {
+      await user.click(candle)
+    }
+    await user.click(screen.getByRole('button', { name: 'BLOW CANDLES' }))
+    await user.click(screen.getByRole('button', { name: 'onClick' }))
+    await user.click(screen.getByRole('button', { name: 'extinguishAllCandles()' }))
+    await user.click(screen.getByRole('button', { name: 'BLOW CANDLES' }))
+
+    expect(container.querySelectorAll('.pie-candle')).toHaveLength(CANDLE_COUNT)
+    expect(container.querySelectorAll('.pie-candle-flame')).toHaveLength(0)
+    expect(container.querySelector('.pie-illustration')).toBeInTheDocument()
+  })
+
   it('lights all candles, builds the button and blows them all out', async () => {
     const user = userEvent.setup()
     render(

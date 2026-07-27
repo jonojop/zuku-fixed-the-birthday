@@ -8,18 +8,68 @@
 
 .handball-court {
   width: 100%;
-  max-width: 360px;
+  max-width: 400px;
 }
 
-.handball-goal,
+.handball-goal-group {
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.handball-goal-broken-left {
+  transform: translate(50px, -60px) rotate(20deg);
+  opacity: 0.55;
+}
+
+.handball-goal-broken-right {
+  transform: translate(-50px, 60px) rotate(-20deg);
+  opacity: 0.55;
+}
+
+.handball-goal-fixed {
+  transform: translate(0, 0) rotate(0deg);
+  opacity: 1;
+}
+
 .handball-player,
 .handball-ball {
   transition:
-    x 0.5s ease,
-    y 0.5s ease,
-    cx 0.5s ease,
-    cy 0.5s ease,
+    cx 0.6s ease,
+    cy 0.6s ease,
     opacity 0.4s ease;
+}
+
+.handball-player-label {
+  font-size: 8px;
+  font-weight: 700;
+  fill: var(--white-warm);
+  pointer-events: none;
+  transition:
+    x 0.6s ease,
+    y 0.6s ease;
+}
+
+.handball-player-label-dark {
+  fill: #3a1420;
+}
+
+.handball-players-met .handball-player {
+  filter: drop-shadow(0 0 4px rgba(248, 243, 231, 0.4));
+}
+
+.handball-ball-in-play {
+  animation: handball-ball-bounce 1.4s ease-in-out infinite;
+}
+
+@keyframes handball-ball-bounce {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, -6px);
+  }
 }
 
 .handball-memory {
@@ -39,4 +89,10 @@
   object-fit: cover;
   border-radius: var(--radius-md);
   border: 1px solid rgba(214, 168, 75, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .handball-ball-in-play {
+    animation: none;
+  }
 }

@@ -1,8 +1,72 @@
 .css-scene {
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
   overflow: hidden;
+}
+
+.css-before-after {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: var(--red-jp);
+  border: 1px solid var(--red-jp);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.css-before-after-done {
+  color: var(--terminal-green);
+  border-color: var(--terminal-green);
+}
+
+.css-card-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.css-inspector-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--terminal-green);
+  opacity: 0;
+  pointer-events: none;
+  animation: css-inspector-flash 0.7s ease-out;
+}
+
+.css-inspector-pulse::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  top: 0;
+  background: var(--terminal-green);
+  box-shadow: 0 0 8px var(--terminal-green);
+  animation: css-inspector-sweep 0.7s ease-out;
+}
+
+@keyframes css-inspector-flash {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes css-inspector-sweep {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: 100%;
+  }
 }
 
 .css-card {
@@ -13,9 +77,9 @@
   background: rgba(230, 57, 70, 0.08);
   border: 1px dashed var(--red-jp);
   transition:
-    width 0.4s ease,
+    width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
     align-items 0.4s ease,
-    border-radius 0.4s ease,
+    border-radius 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
     padding 0.4s ease;
   width: 100%;
   align-items: flex-start;
@@ -29,9 +93,9 @@
   background: var(--sakura);
   flex-shrink: 0;
   transition:
-    width 0.4s ease,
-    height 0.4s ease,
-    border-radius 0.4s ease;
+    width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-radius 0.5s ease;
 }
 
 .css-card-title {
@@ -94,4 +158,12 @@
   border-radius: var(--radius-md);
   border-color: var(--gold);
   color: var(--gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .css-inspector-pulse,
+  .css-inspector-pulse::after {
+    animation: none;
+    display: none;
+  }
 }

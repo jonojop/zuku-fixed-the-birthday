@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react'
 import { LEVELS } from '../content/gameContent'
 import { FixSequenceLevel } from '../components/FixSequenceLevel'
 import { useGameDispatch } from '../context/GameContext'
+import { useAsset } from '../hooks/useAssetManifest'
+import { playDeployTick, playEngineRev } from '../utils/sound'
 import type { R33Parts } from '../types/game'
 import './ProjectR33Level.css'
 
@@ -78,8 +81,48 @@ function Scene({ fixIndex, isComplete }: { fixIndex: number; isComplete: boolean
   )
 }
 
+function R33RevealScreen({ onContinue }: { onContinue: () => void }) {
+  const { url: r33Photo } = useAsset('nissan-r33')
+  const [headlightsOn, setHeadlightsOn] = useState(false)
+
+  useEffect(() => {
+    playEngineRev()
+    const timer = window.setTimeout(() => setHeadlightsOn(true), 700)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  return (
+    <div className="r33-reveal app-shell">
+      <div className="r33-reveal-content stack">
+        <div className={`r33-reveal-frame${headlightsOn ? ' r33-reveal-headlights' : ''}`}>
+          {r33Photo ? (
+            <img src={r33Photo} alt="Nissan Skyline GT-R R33 real" className="r33-reveal-photo" />
+          ) : (
+            <div className="r33-reveal-placeholder mono" aria-hidden="true">
+              R33 reveal
+            </div>
+          )}
+        </div>
+
+        <p className="r33-reveal-caption mono">PROJECT R33 — Build completed.</p>
+        <p className="r33-reveal-subcaption">Not street legal in this browser.</p>
+
+        <button type="button" className="btn btn-primary" onClick={onContinue}>
+          Continuar build
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export function ProjectR33Level() {
   const dispatch = useGameDispatch()
+  const [showReveal, setShowReveal] = useState(false)
+
+  if (showReveal) {
+    return <R33RevealScreen onContinue={() => dispatch({ type: 'COMPLETE_LEVEL', levelId: 'project-r33' })} />
+  }
+
   return (
     <FixSequenceLevel
       level={level}
@@ -89,6 +132,22 @@ export function ProjectR33Level() {
         const part = FIX_TO_PART[fixId]
         if (part) dispatch({ type: 'SET_R33_PART', part })
       }}
+      renderComplete={() => (
+        <div className="panel stack level-complete-panel">
+          <p className="mono level-complete-title">{level.completionTitle}</p>
+          <p className="level-complete-subtitle">{level.completionSubtitle}</p>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              playDeployTick()
+              setShowReveal(true)
+            }}
+          >
+            Continuar build
+          </button>
+        </div>
+      )}
     />
   )
 }

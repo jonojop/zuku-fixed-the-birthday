@@ -59,3 +59,39 @@
     transform: translateX(4px) rotate(1deg);
   }
 }
+
+.event-deploy-stamp {
+  border: 3px solid var(--terminal-green);
+  color: var(--terminal-green);
+  padding: 6px 18px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  transform: rotate(-8deg) scale(1.4);
+  opacity: 0;
+  animation: event-stamp-in 0.5s ease forwards;
+}
+
+@keyframes event-stamp-in {
+  0% {
+    transform: rotate(-8deg) scale(2.2);
+    opacity: 0;
+  }
+  60% {
+    transform: rotate(-8deg) scale(0.9);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(-8deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .event-deploy-stamp {
+    animation: none;
+    opacity: 1;
+    transform: rotate(-8deg) scale(1);
+  }
+}
