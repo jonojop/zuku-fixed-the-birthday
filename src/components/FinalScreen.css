@@ -1,0 +1,82 @@
+.final-screen {
+  min-height: 100vh;
+  padding: var(--space-4);
+  align-items: center;
+}
+
+.final-topbar {
+  width: 100%;
+  max-width: 640px;
+  justify-content: flex-end;
+}
+
+.final-content {
+  width: 100%;
+  max-width: 640px;
+  margin: auto 0;
+  gap: var(--space-4);
+}
+
+.final-reveal {
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+}
+
+.final-headline {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  background: linear-gradient(135deg, var(--gold), var(--sakura));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.final-message {
+  white-space: pre-line;
+  color: var(--white-warm);
+  max-width: 55ch;
+  line-height: 1.7;
+}
+
+.final-achievement {
+  color: var(--terminal-green);
+  font-size: 0.8rem;
+}
+
+.final-photo-frame {
+  border: 1px solid rgba(214, 168, 75, 0.4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2);
+}
+
+.final-photo {
+  max-width: 220px;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.final-icons {
+  font-size: 1.6rem;
+  display: flex;
+  gap: var(--space-3);
+}
+
+.final-actions {
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: rgba(248, 243, 231, 0.35);
+  font-size: 0.7rem;
+  padding: 8px;
+  min-height: 32px;
+}
+
+.btn-link:hover {
+  color: rgba(248, 243, 231, 0.7);
+}

@@ -1,0 +1,14 @@
+.level-complete-panel {
+  align-items: flex-start;
+  border-color: rgba(117, 240, 167, 0.35);
+}
+
+.level-complete-title {
+  color: var(--terminal-green);
+  font-size: 1rem;
+  white-space: pre-wrap;
+}
+
+.level-complete-subtitle {
+  color: rgba(248, 243, 231, 0.8);
+}

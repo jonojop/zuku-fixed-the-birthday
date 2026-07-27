@@ -1,0 +1,85 @@
+.level-layout {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.level-header-top {
+  justify-content: space-between;
+}
+
+.level-header-actions {
+  gap: var(--space-2);
+}
+
+.level-badge {
+  font-size: 0.75rem;
+  color: var(--terminal-green);
+  border: 1px solid rgba(117, 240, 167, 0.35);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.level-header h1 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  margin: var(--space-2) 0 var(--space-1);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+}
+
+.level-mission {
+  color: rgba(248, 243, 231, 0.75);
+  margin-bottom: var(--space-3);
+  max-width: 60ch;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.level-body {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.level-scene {
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.level-scene svg,
+.level-scene img {
+  max-width: 100%;
+  height: auto;
+}
+
+.level-fix-counter {
+  justify-content: space-between;
+  color: var(--gold);
+  font-size: 0.85rem;
+}
+
+.btn-hint {
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  min-height: 36px;
+}
+
+@media (max-width: 900px) {
+  .level-body {
+    grid-template-columns: 1fr;
+  }
+
+  .level-layout {
+    padding: var(--space-3);
+  }
+
+  .level-scene {
+    min-height: 240px;
+  }
+}

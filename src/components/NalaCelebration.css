@@ -1,0 +1,73 @@
+.nala-celebration {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  min-height: 100vh;
+}
+
+.nala-stage {
+  width: min(280px, 70vw);
+}
+
+.nala-photo {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  object-fit: contain;
+  animation: nala-bounce 1.1s ease-in-out infinite;
+}
+
+.nala-svg {
+  width: 100%;
+  height: auto;
+}
+
+.nala-body {
+  animation: nala-bounce 0.9s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.nala-tail {
+  animation: nala-wag 0.4s ease-in-out infinite;
+  transform-origin: 40px 90px;
+}
+
+@keyframes nala-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes nala-wag {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(18deg);
+  }
+}
+
+.nala-message {
+  font-size: 1.2rem;
+  color: var(--terminal-green);
+}
+
+.nala-sublabel {
+  color: rgba(248, 243, 231, 0.6);
+  font-size: 0.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nala-photo,
+  .nala-body,
+  .nala-tail {
+    animation: none;
+  }
+}
