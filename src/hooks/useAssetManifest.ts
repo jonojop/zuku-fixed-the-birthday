@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react'
 
-export type AssetKey = 'zuku-animated' | 'zuku-character' | 'nala' | 'mani' | 'final-photo' | 'handball-photo'
+export type AssetKey =
+  | 'zuku-standing'
+  | 'zuku-sitting'
+  | 'zuku-animated'
+  | 'zuku-character'
+  | 'nala'
+  | 'mani'
+  | 'final-photo'
+  | 'handball-photo'
 
 interface ManifestEntry {
   found: boolean

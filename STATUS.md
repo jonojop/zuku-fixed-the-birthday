@@ -26,16 +26,24 @@ Completo. Las 9 fases están terminadas y el sitio está publicado y verificado 
    encontrado en la revisión (el alerón del R33 flotaba desconectado de la carrocería — corregido
    ancorándolo a un vértice conocido del path SVG y subiendo el contraste del cuerpo del auto).
 8. Documentación — README, ASSETS, CLAUDE, STATUS, FINAL_REPORT.
-9. Publicación — repo público creado, 8 commits pusheados a `main`, GitHub Actions configurado y
+9. Publicación — repo público creado, commits pusheados a `main`, GitHub Actions configurado y
    verificado en verde, GitHub Pages activo con `build_type: workflow`, sitio público verificado
    visualmente (screenshot + consola sin errores) en la URL real de producción.
+10. Rediseño de Rest Protocol — reemplazado el escenario propio (escritorio/monitor/silla en SVG) por
+    las dos ilustraciones reales `zuku-standing`/`zuku-sitting` entregadas (cada una ya es una escena
+    completa, silla incluida en `zuku-sitting`). Se eliminó por completo cualquier silla propia del
+    código. Los 5 fixes pasaron a ser `notifications`, `monitorBrightness`, `autoSave`, `breakTimer`
+    y `onBreakComplete`, mostrados en un HUD de estado; el 5º fix dispara el crossfade parado→sentado
+    y el mensaje "Work session completed".
 
 ## Assets personales detectados
 
 | Clave | Archivo origen | Formato | ¿Animado? | Resultado |
 |---|---|---|---|---|
-| zuku-animated | `zuku-animated.png.jpg` | JPEG (1024×1024) | No (foto estática) | Sincronizado a `public/assets/zuku-animated.jpg`, usado como avatar en Rest Protocol |
-| zuku-character | — | — | — | No encontrado, no aplica (zuku-animated ya cubre el nivel) |
+| zuku-standing | `zuku-standing.webp.png` | PNG (1024×1024, ilustración completa) | No | Sincronizado a `public/assets/zuku-standing.png`, estado inicial del nivel Rest Protocol |
+| zuku-sitting | `zuku-sitting.webp.png` | PNG (1024×1024, ilustración completa, silla incluida) | No | Sincronizado a `public/assets/zuku-sitting.png`, estado final tras el 5º fix de Rest Protocol |
+| zuku-animated | `zuku-animated.png.jpg` | JPEG (1024×1024) | No (foto estática) | Sincronizado pero sin uso actual (superado por zuku-standing/zuku-sitting) |
+| zuku-character | — | — | — | No encontrado, no aplica |
 | nala | — | — | — | No encontrado, fallback SVG en uso |
 | mani | `mani.png.jpg` | JPEG (447×447) | No | Sincronizado a `public/assets/mani.jpg`, usado en MANI_ARCHIVE |
 | final-photo | — | — | — | No encontrado, fallback (no se muestra tarjeta) |
@@ -45,8 +53,10 @@ Completo. Las 9 fases están terminadas y el sitio está publicado y verificado 
 
 - `npm run lint` → 0 errores, 2 warnings esperables (react-refresh en el archivo de contexto, patrón
   estándar).
-- `npm run test` (Vitest) → **32/32 tests pasando** (7 archivos: content, gameReducer, persistence,
-  BootScreen, LemonPieLevel, NalaCelebration, App).
+- `npm run test` (Vitest) → **35/35 tests pasando** (8 archivos: content, gameReducer, persistence,
+  BootScreen, LemonPieLevel, NalaCelebration, App, RestProtocolLevel — este último verifica
+  explícitamente que zuku-sitting solo aparece tras el 5º fix y que no existe ningún elemento con
+  clase que contenga "chair" en el render).
 - `npm run test:e2e` (Playwright, Chromium local) → **6/6 tests pasando**, incluyendo el playthrough
   completo (8 niveles + secreto + reset) y las 5 capturas mobile.
 - `npm run build` → build exitoso (`dist/` ~244 KB JS, ~18 KB CSS antes de gzip).

@@ -39,7 +39,7 @@ test.describe('Full playthrough (desktop)', () => {
 
     await expect(page.getByText('LEVEL 04 // REST PROTOCOL')).toBeVisible()
     await solveFixesOnly(page, 'rest-protocol')
-    await expect(page.getByText('restMode: stable')).toBeVisible()
+    await expect(page.locator('.rest-session-caption')).toBeVisible()
     await page.screenshot({ path: path.join(PREVIEW_DIR, 'preview-rest-desktop.png') })
     await advanceAfterLevel(page)
 

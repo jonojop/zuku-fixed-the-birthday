@@ -233,27 +233,15 @@ export const LEVELS: LevelDefinition[] = [
     completionSubtitle: 'Even good developers need to sit down.',
     fixes: [
       fix(
-        'chair-visibility',
-        'La silla existe en el código pero nadie la ve.',
-        'visibility: hidden oculta el elemento sin sacarlo del layout.',
-        'Silla visible.',
+        'notifications',
+        'Las notificaciones no paran de llegar.',
+        'Necesitás pausarlas, no dejarlas infinitas.',
+        'Notificaciones pausadas.',
         [
-          ['correct', 'chair.style.visibility = "visible";', true],
-          ['hidden', 'chair.style.visibility = "hidden";', false],
-          ['collapse', 'chair.style.visibility = "collapse";', false],
-          ['opacity0', 'chair.style.opacity = 0;', false],
-        ]
-      ),
-      fix(
-        'chair-position',
-        'La silla está del otro lado del cuarto.',
-        'Tiene que estar justo detrás del escritorio.',
-        'Silla en posición.',
-        [
-          ['correct', 'chair.position = "at-desk";', true],
-          ['hallway', 'chair.position = "hallway";', false],
-          ['roof', 'chair.position = "roof";', false],
-          ['kitchen', 'chair.position = "kitchen";', false],
+          ['correct', 'notifications = "paused";', true],
+          ['infinite', 'notifications = "infinite";', false],
+          ['loud', 'notifications = "loud";', false],
+          ['null', 'notifications = null;', false],
         ]
       ),
       fix(
@@ -262,34 +250,46 @@ export const LEVELS: LevelDefinition[] = [
         'Bajalo a un nivel cómodo para los ojos.',
         'Brillo ajustado.',
         [
-          ['correct', 'monitor.brightness = 55;', true],
-          ['max', 'monitor.brightness = 100;', false],
-          ['over', 'monitor.brightness = 250;', false],
-          ['zero', 'monitor.brightness = 0;', false],
+          ['correct', 'monitorBrightness = 70;', true],
+          ['max', 'monitorBrightness = 180;', false],
+          ['over', 'monitorBrightness = 255;', false],
+          ['zero', 'monitorBrightness = 0;', false],
         ]
       ),
       fix(
-        'rest-mode',
-        'El modo descanso del sistema está apagado.',
-        'restMode necesita pasar a true.',
-        'restMode activado.',
+        'autosave',
+        'El editor no está guardando nada solo.',
+        'autoSave necesita pasar a true.',
+        'Auto-guardado activado.',
         [
-          ['correct', 'restMode = true;', true],
-          ['false', 'restMode = false;', false],
-          ['undefined', 'restMode = undefined;', false],
-          ['string', 'restMode = "later";', false],
+          ['correct', 'autoSave = true;', true],
+          ['false', 'autoSave = false;', false],
+          ['later', 'autoSave = "later";', false],
+          ['undefined', 'autoSave = undefined;', false],
         ]
       ),
       fix(
-        'sit-zuku',
-        'El botón de descanso no llama a la función correcta.',
-        'Conectá el botón con sitZuku().',
-        'Zuku se sienta.',
+        'break-timer',
+        'No existe ningún temporizador de descanso.',
+        'breakTimer tiene que pasar a "enabled".',
+        'Temporizador de descanso activado.',
         [
-          ['correct', 'restButton.onclick = sitZuku;', true],
-          ['stand', 'restButton.onclick = keepStanding;', false],
-          ['none', 'restButton.onclick = null;', false],
-          ['wrong', 'restButton.onclick = startBuild;', false],
+          ['correct', 'breakTimer = "enabled";', true],
+          ['undefined', 'breakTimer = undefined;', false],
+          ['disabled', 'breakTimer = "disabled";', false],
+          ['zero', 'breakTimer = 0;', false],
+        ]
+      ),
+      fix(
+        'break-complete',
+        'Cuando termina el descanso, el sistema sigue eligiendo seguir programando.',
+        'onBreakComplete tiene que activar el modo descanso, no seguir codeando.',
+        'Sesión de trabajo completada.',
+        [
+          ['correct', 'onBreakComplete = activateRestMode;', true],
+          ['keepCoding', 'onBreakComplete = keepCoding;', false],
+          ['ignore', 'onBreakComplete = ignoreBreak;', false],
+          ['null', 'onBreakComplete = null;', false],
         ]
       ),
     ],

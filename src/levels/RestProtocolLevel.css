@@ -3,32 +3,108 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
-.rest-svg {
+.rest-figure-frame {
+  position: relative;
   width: 100%;
-  max-width: 340px;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+  transition: filter 0.6s ease;
 }
 
-.rest-chair-hidden {
-  opacity: 0;
+.rest-figure-dimmed {
+  filter: brightness(0.72);
 }
 
-.rest-chair-visible {
+.rest-figure {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  transition: opacity 0.8s ease;
+}
+
+.rest-figure-standing {
   opacity: 1;
 }
 
-.rest-chair,
-.rest-body {
-  transition: transform 0.5s ease;
+.rest-figure-standing.rest-figure-hidden {
+  opacity: 0;
 }
 
-.rest-monitor-glow {
-  transition: opacity 0.5s ease;
+.rest-figure-typing {
+  animation: rest-typing-jitter 0.5s ease-in-out infinite;
 }
 
-.rest-scene-caption {
+@keyframes rest-typing-jitter {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(1.5px);
+  }
+}
+
+.rest-figure-sitting {
+  opacity: 0;
+}
+
+.rest-figure-sitting.rest-figure-visible {
+  opacity: 1;
+}
+
+.rest-figure-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(248, 243, 231, 0.3);
+  color: rgba(248, 243, 231, 0.5);
+  font-size: 0.8rem;
+}
+
+.rest-session-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 12px;
+  margin: 0;
+  text-align: center;
+  font-size: 0.8rem;
   color: var(--terminal-green);
-  font-size: 0.75rem;
+  background: linear-gradient(0deg, rgba(5, 6, 10, 0.85), transparent);
+}
+
+.rest-hud {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: rgba(248, 243, 231, 0.45);
+}
+
+.rest-hud p {
+  margin: 0;
+}
+
+.rest-hud-ok {
+  color: var(--terminal-green);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rest-figure-typing {
+    animation: none;
+  }
 }

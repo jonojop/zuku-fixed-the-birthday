@@ -1,6 +1,20 @@
 {
-  "generatedAt": "2026-07-27T18:42:12.017Z",
+  "generatedAt": "2026-07-27T19:13:18.961Z",
   "assets": {
+    "zuku-standing": {
+      "found": true,
+      "sourceFile": "zuku-standing.webp.png",
+      "publicPath": "assets/zuku-standing.png",
+      "extension": ".png",
+      "animated": false
+    },
+    "zuku-sitting": {
+      "found": true,
+      "sourceFile": "zuku-sitting.webp.png",
+      "publicPath": "assets/zuku-sitting.png",
+      "extension": ".png",
+      "animated": false
+    },
     "zuku-animated": {
       "found": true,
       "sourceFile": "zuku-animated.png.jpg",

@@ -22,7 +22,7 @@ end-to-end en verde tanto localmente como en el pipeline de GitHub Actions que h
 | Comando | Resultado |
 |---|---|
 | `npm run lint` | ✅ 0 errores, 2 warnings esperables (`react-refresh` en `GameContext.tsx`, patrón estándar de contexto+hooks de React) |
-| `npm run test` (Vitest) | ✅ **32/32 tests** en 7 archivos |
+| `npm run test` (Vitest) | ✅ **35/35 tests** en 8 archivos |
 | `npm run test:e2e` (Playwright, Chromium local) | ✅ **6/6 tests**: playthrough completo de los 8 niveles + secreto + reset, y 5 capturas mobile |
 | `npm run build` | ✅ build exitoso |
 | GitHub Actions (`Deploy to GitHub Pages`) | ✅ verde — corre exactamente los mismos 4 pasos (lint, test, build, e2e) antes de desplegar |
@@ -32,7 +32,10 @@ end-to-end en verde tanto localmente como en el pipeline de GitHub Actions que h
 1. Event Handler — 3 fixes
 2. CSS Recovery — 4 fixes
 3. First Match — 4 fixes (cancha de handball en SVG, recuerdo desbloqueable)
-4. Rest Protocol — **5 fixes exactos** (Zuku se sienta; usa la foto real como avatar)
+4. Rest Protocol — **5 fixes exactos** (`notifications`, `monitorBrightness`, `autoSave`,
+   `breakTimer`, `onBreakComplete`); usa las dos ilustraciones reales `zuku-standing`/`zuku-sitting`
+   como escena completa, sin ninguna silla propia — la silla del estado final viene incluida en la
+   foto `zuku-sitting`
 5. Travel Route — 4 fixes (mapa SVG Buenos Aires → Tokio)
 6. Production Merge — 4 fixes (conflicto de merge, commit, pipeline, deploy)
 7. Project R33 — **5 fixes exactos** (Nissan Skyline GT-R R33 en SVG original, se arma pieza por pieza)
@@ -48,9 +51,11 @@ antes de pasar al siguiente.
 
 | Clave | Estado |
 |---|---|
-| `zuku-animated` | ✅ Detectado (`zuku-animated.png.jpg`, foto estática 1024×1024) — integrado como avatar en Rest Protocol |
+| `zuku-standing` | ✅ Detectado (`zuku-standing.webp.png`, ilustración completa 1024×1024) — estado inicial de Rest Protocol |
+| `zuku-sitting` | ✅ Detectado (`zuku-sitting.webp.png`, ilustración completa 1024×1024, silla incluida) — estado final de Rest Protocol tras el 5º fix |
 | `mani` | ✅ Detectado (`mani.png.jpg`, 447×447) — integrado en MANI_ARCHIVE |
-| `zuku-character` | No encontrado — no hace falta, `zuku-animated` ya cubre el nivel |
+| `zuku-animated` | Detectado pero sin uso actual (superado por `zuku-standing`/`zuku-sitting`) |
+| `zuku-character` | No encontrado — no hace falta |
 | `nala` | No encontrado — fallback: perro SVG animado con chapita "Nala" |
 | `handball-photo` | No encontrado — fallback: no se muestra tarjeta de foto (solo el texto del recuerdo) |
 | `final-photo` | No encontrado — fallback: no se muestra tarjeta de foto en la pantalla final |
