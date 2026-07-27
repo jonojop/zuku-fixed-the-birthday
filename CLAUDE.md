@@ -12,6 +12,11 @@ Reglas permanentes para trabajar en este proyecto. Leé esto antes de tocar cód
   `src/content/gameContent.ts`. **Rest Protocol: exactamente 5 fixes. Project R33: exactamente 5
   fixes. Lemon Pie Protocol: exactamente 26 velas.** Estos números están cubiertos por tests
   (`src/tests/content.test.ts`, `src/tests/gameReducer.test.ts`) — si cambian, los tests fallan a propósito.
+- **Rest Protocol nunca tiene silla propia.** Ni SVG, ni CSS, ni un componente separado, en ningún
+  estado (selfie/standing/sitting). La silla del estado final ya viene incluida en la foto
+  `zuku-sitting`. Esto se pidió explícitamente dos veces por el usuario — es una regla absoluta, no
+  una preferencia. `src/tests/RestProtocolLevel.test.tsx` falla si aparece cualquier clase que
+  contenga "chair".
 
 ## Restricciones de gasto (no negociable)
 
@@ -28,13 +33,31 @@ Este proyecto es 100% gratuito, local y de código abierto. Nunca:
   `phase` en `src/context/gameReducer.ts`).
 - Contenido centralizado en `src/content/gameContent.ts` — no hardcodees texto del juego en componentes.
 - Mecánica compartida: `src/hooks/useFixSequence.ts` + `src/components/FixSequenceLevel.tsx` cubren
-  los niveles 1, 2, 3, 4, 5, 6 y 7 (todos son "elegí la opción correcta entre varias"). Cada nivel solo
-  define su propia escena SVG (`src/levels/*.tsx`). El nivel 8 (velas) es el único bespoke porque su
-  mecánica es distinta (26 toggles + constructor de botón de 3 partes).
+  los niveles 1, 2, 3, 5, 6 y 7 (todos son "elegí la opción correcta entre varias"), y también los 4
+  fixes de "estado B" de Rest Protocol. Cada nivel solo define su propia escena (`src/levels/*.tsx`).
+  `FixSequenceLevel` acepta un `renderComplete` opcional para reemplazar el panel de "nivel completo"
+  por una escena propia (usado por Travel Route y Project R33 para sus reveals fotográficos antes de
+  disparar `COMPLETE_LEVEL`). El nivel 8 (velas) es bespoke porque su mecánica es distinta (26 toggles
+  físicos sobre la torta + constructor de botón de 3 partes). Rest Protocol también es parcialmente
+  bespoke: envuelve un estado local (`debuggingStarted`) alrededor de `FixSequenceLevel` para el
+  estado A (selfie + START DEBUGGING) que antecede a los fixes.
+- **Respuestas correctas**: nunca dependas de `optionIndex` para nada — el orden ya viene resuelto
+  desde `gameContent.ts` (`placeCorrectOption`, secuencia balanceada determinista). Si agregás un
+  fix nuevo con `fix(...)`, la posición de la opción correcta se calcula sola; no la fuerces a mano ni
+  reintroduzcas un shuffle en `SimulatedEditor`.
+- Sonido centralizado en `src/utils/sound.ts` (Web Audio API, sin archivos). Nombres estables:
+  `playCorrect`, `playIncorrect`, `playDeployTick`, `playLevelComplete`, `playNalaTransition`,
+  `playEngineRev`, `playCandleIgnite`, `playCandlesBlow`, `playFinalCelebration`,
+  `startFinalAmbientMusic`/`stopFinalAmbientMusic`. `useFixSequence` y `FixSequenceLevel` ya disparan
+  correct/incorrect/level-complete solos — no los vuelvas a llamar manualmente en un nivel que use
+  ese hook.
 - Persistencia: `src/context/persistence.ts`. `reviveState()` reconstruye campo por campo ante datos
   corruptos — nunca debe tirar el save entero por un solo campo inválido.
 - Assets personales: `scripts/sync-assets.mjs` + `src/hooks/useAssetManifest.ts`. Nunca asumas que una
-  imagen real existe — todo componente que la use debe tener un fallback SVG funcional.
+  imagen real existe — todo componente que la use debe tener un fallback SVG/placeholder funcional.
+- **Tipografía**: solo `@fontsource/space-grotesk` (Latin, liviano). No reintroduzcas una fuente CJK
+  completa (ej. Zen Kaku Gothic New) solo por estética "japonesa" en texto latino — ya se probó y
+  agregaba ~450KB de CSS para cero beneficio real (ver `FINAL_REPORT.md`).
 
 ## Comandos
 

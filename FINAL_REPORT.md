@@ -1,12 +1,13 @@
-# FINAL REPORT — Zuku Fixed the Birthday
+# FINAL REPORT — Zuku Fixed the Birthday (Polish V2)
 
 Fecha: 2026-07-27.
 
 ## Estado final
 
-**Completo.** Las 8 fases de desarrollo y la fase de publicación están terminadas. El sitio funciona
-localmente (dev, build, preview) y en producción (GitHub Pages), con lint, tests unitarios y
-end-to-end en verde tanto localmente como en el pipeline de GitHub Actions que hizo el deploy.
+**Completo.** Todos los puntos de la actualización Polish V2 (distribución de respuestas, sonido
+ampliado, Rest Protocol de 3 estados, reveals fotográficos de Japón/R33, Lemon Pie volumétrico,
+pantalla final con globos/tipografía/música, logros con tooltip, Inspect Build) están implementados,
+probados y verificados visualmente. Lint, tests unitarios, end-to-end y build en verde.
 
 ## Rutas y URLs
 
@@ -14,89 +15,88 @@ end-to-end en verde tanto localmente como en el pipeline de GitHub Actions que h
 |---|---|
 | Ruta local | `D:\ZukuFixedTheBirthday` |
 | URL de preview local | `http://localhost:4173/zuku-fixed-the-birthday/` (`npm run build && npm run preview -- --port 4173`) |
-| Repositorio | https://github.com/jonojop/zuku-fixed-the-birthday |
-| **URL pública** | **https://jonojop.github.io/zuku-fixed-the-birthday/** |
+| Repositorio | https://github.com/jonojop/zuku-fixed-the-birthday (sin cambios — mismo repo) |
+| **URL pública** | **https://jonojop.github.io/zuku-fixed-the-birthday/** (sin cambios — mismo base path) |
 
 ## Resultados de calidad
 
 | Comando | Resultado |
 |---|---|
-| `npm run lint` | ✅ 0 errores, 2 warnings esperables (`react-refresh` en `GameContext.tsx`, patrón estándar de contexto+hooks de React) |
-| `npm run test` (Vitest) | ✅ **35/35 tests** en 8 archivos |
-| `npm run test:e2e` (Playwright, Chromium local) | ✅ **6/6 tests**: playthrough completo de los 8 niveles + secreto + reset, y 5 capturas mobile |
-| `npm run build` | ✅ build exitoso |
-| GitHub Actions (`Deploy to GitHub Pages`) | ✅ verde — corre exactamente los mismos 4 pasos (lint, test, build, e2e) antes de desplegar |
+| `npm run lint` | ✅ 0 errores, 2 warnings esperables (`react-refresh` en `GameContext.tsx`) |
+| `npm run test` (Vitest) | ✅ **57/57 tests** en 15 archivos |
+| `npm run test:e2e` (Playwright) | ✅ **11/11 tests**: playthrough desktop completo (8 niveles + los 3 reveals fotográficos + secreto + reset) y 10 capturas mobile |
+| `npm run build` | ✅ build exitoso — CSS 35KB (7.5KB gzip), JS ~258KB (~80KB gzip) |
+
+## Cambios de Polish V2 (resumen)
+
+- **Respuestas correctas balanceadas**: posición determinista, sin sesgo hacia "siempre la última".
+- **Sonido en todos los niveles**: correcto/incorrecto/deploy/nivel completado/Nala/motor/velas/soplido/celebración final, todo Web Audio API, respetando el botón global de sonido.
+- **Rest Protocol V3**: `zuku-selfie` → START DEBUGGING → `zuku-standing` (4 fixes, sin rebote) → crossfade → `zuku-sitting` (5º fix). Cero silla propia en el código, en ningún estado.
+- **Nala**: usa `nala-playing` cuando existe, con chapita visible y balanceo lateral + rebote suave.
+- **First Match**: cancha de handball real (arcos a izquierda y derecha, áreas curvas, línea de 9m), jugadores "Jono"/"Zuku".
+- **Travel Route**: reveal intermedio con la foto real `zuku-japan` tras llegar a Narita.
+- **Project R33**: reveal fotográfico real (`nissan-r33`) con motor sintetizado, después de terminar el SVG.
+- **Lemon Pie**: torta volumétrica (CSS/SVG con degradados, sombra, plato), 26 velas que aparecen físicamente sobre la torta en posiciones predeterminadas, persisten (apagadas) después de soplarlas.
+- **Pantalla final**: oscurecimiento progresivo, globos ascendentes, tipografía local (@fontsource, sin CDN), música ambiental + celebración sonora, 9 logros con tooltip accesible, Inspect Build con estética de terminal.
 
 ## Niveles implementados
 
-1. Event Handler — 3 fixes
-2. CSS Recovery — 4 fixes
-3. First Match — 4 fixes (cancha de handball en SVG, recuerdo desbloqueable)
-4. Rest Protocol — **5 fixes exactos** (`notifications`, `monitorBrightness`, `autoSave`,
-   `breakTimer`, `onBreakComplete`); usa las dos ilustraciones reales `zuku-standing`/`zuku-sitting`
-   como escena completa, sin ninguna silla propia — la silla del estado final viene incluida en la
-   foto `zuku-sitting`
-5. Travel Route — 4 fixes (mapa SVG Buenos Aires → Tokio)
-6. Production Merge — 4 fixes (conflicto de merge, commit, pipeline, deploy)
-7. Project R33 — **5 fixes exactos** (Nissan Skyline GT-R R33 en SVG original, se arma pieza por pieza)
-8. Lemon Pie Protocol — **26 velas exactas** + constructor del botón BLOW CANDLES de 3 partes
+1. Event Handler — 3 fixes + sello de deploy animado
+2. CSS Recovery — 4 fixes + inspector/BEFORE-AFTER
+3. First Match — 4 fixes, cancha de handball correcta (arcos izq/der), Jono/Zuku
+4. Rest Protocol — **5 fixes exactos**, 3 estados fotográficos reales, cero silla propia
+5. Travel Route — 4 fixes + reveal fotográfico de Japón
+6. Production Merge — 4 fixes
+7. Project R33 — **5 fixes exactos** + reveal fotográfico real + motor
+8. Lemon Pie Protocol — **26 velas exactas**, físicas sobre la torta, persisten apagadas
 
-Más el nivel secreto **MANI_ARCHIVE** (discretamente insinuado desde la pantalla final) y la
-**pantalla final** con el mensaje firmado por Jonococina.
-
-Después de cada uno de los 8 niveles aparece la celebración de Nala (con chapita "Nala" visible),
-antes de pasar al siguiente.
+Más el nivel secreto **MANI_ARCHIVE** y la **pantalla final** firmada por Jonococina.
 
 ## Assets detectados
 
 | Clave | Estado |
 |---|---|
-| `zuku-standing` | ✅ Detectado (`zuku-standing.webp.png`, ilustración completa 1024×1024) — estado inicial de Rest Protocol |
-| `zuku-sitting` | ✅ Detectado (`zuku-sitting.webp.png`, ilustración completa 1024×1024, silla incluida) — estado final de Rest Protocol tras el 5º fix |
-| `mani` | ✅ Detectado (`mani.png.jpg`, 447×447) — integrado en MANI_ARCHIVE |
-| `zuku-animated` | Detectado pero sin uso actual (superado por `zuku-standing`/`zuku-sitting`) |
-| `zuku-character` | No encontrado — no hace falta |
-| `nala` | No encontrado — fallback: perro SVG animado con chapita "Nala" |
-| `handball-photo` | No encontrado — fallback: no se muestra tarjeta de foto (solo el texto del recuerdo) |
-| `final-photo` | No encontrado — fallback: no se muestra tarjeta de foto en la pantalla final |
-
-Ninguna imagen faltante bloquea el juego; todos los fallbacks están implementados y probados.
+| `zuku-selfie` | ✅ (copia con nombre correcto de la imagen entregada) — intro de Rest Protocol |
+| `zuku-standing` | ✅ — estado B de Rest Protocol |
+| `zuku-sitting` | ✅ (silla incluida en la foto) — estado C de Rest Protocol |
+| `zuku-japan` | ✅ — reveal de Travel Route |
+| `nala-playing` | ✅ — celebración de Nala (prioridad sobre `nala`) |
+| `nissan-r33` | ✅ — reveal de Project R33 |
+| `mani` | ✅ — MANI_ARCHIVE |
+| `zuku-animated`, `zuku-character`, `nala`, `handball-photo`, `final-photo` | No encontrados / sin uso — fallbacks SVG en uso, no bloquean nada |
 
 ## Capturas generadas
 
-En `preview/` (generadas por Playwright contra la build real, no son mockups):
+En `preview/` (Playwright contra la build real, no mockups) — 14 desktop + 10 mobile, incluyendo los
+tres reveals fotográficos, los 3 estados del lemon pie (0/26/apagadas), el tooltip de logros, e
+Inspect Build. No se versionan en git (regenerables con `npm run test:e2e`).
 
-- Desktop 1440×900: `preview-home-desktop.png`, `preview-level1-desktop.png`,
-  `preview-handball-desktop.png`, `preview-rest-desktop.png`, `preview-r33-desktop.png`,
-  `preview-lemon-pie-desktop.png`, `preview-final-desktop.png`.
-- Mobile 390×844: `preview-home-mobile.png`, `preview-level-mobile.png`, `preview-rest-mobile.png`,
-  `preview-lemon-pie-mobile.png`, `preview-final-mobile.png`.
+## Problemas encontrados y corregidos durante esta actualización
 
-Estas capturas no se versionan en git (son output regenerable, ver `.gitignore`); se recrean con
-`npm run test:e2e`.
+- Tooltip del primer logro se salía de la pantalla en mobile → corregido con medición real
+  (`getBoundingClientRect`) y clamping dentro del viewport.
+- Los globos de la pantalla final usaban `position: absolute` relativo a un contenedor más alto que
+  el viewport (la página crece con el contenido), quedando fuera de vista → corregido a
+  `position: fixed`.
+- Se había instalado `@fontsource/zen-kaku-gothic-new` para el look "japonés" de los títulos, pero al
+  incluir soporte CJK completo infló el CSS a 466KB para un uso puramente decorativo sobre texto
+  latino → se descartó y se resolvió el mismo efecto visual con peso/tracking sobre Space Grotesk
+  (CSS bajó a 35KB).
 
-## Problemas conocidos (no bloqueantes)
+## Problemas conocidos heredados (no bloqueantes)
 
-- `npm audit` reporta 5 vulnerabilidades "high" en `brace-expansion` (dependencia transitiva de
-  ESLint vía `minimatch`). Es una dependencia **solo de desarrollo** — nunca corre en producción ni
-  procesa input de usuarios reales. Corregirlo requiere subir ESLint a la v10 (breaking change para
-  el linting), así que se documentó en vez de aplicarse sin necesidad real.
-- El alerón del R33 se veía desconectado de la carrocería en la primera revisión visual; se corrigió
-  durante la Fase 7 (ver `STATUS.md`) ancorándolo a un vértice conocido del path SVG.
-- Los touch targets de las 26 velitas son de ~30-34px (por debajo del ideal de 44px) para que las 26
-  quepan sin scroll en pantallas de 360-390px de ancho. Se priorizó "sin scroll horizontal ni elementos
-  inaccesibles" sobre el tamaño ideal de 44px dado el volumen de elementos; todas son alcanzables con
-  teclado (tab) y con touch en las pruebas realizadas.
+- `npm audit`: 5 vulnerabilidades "high" en una dependencia transitiva de ESLint (`brace-expansion`),
+  solo-dev, riesgo real nulo para este proyecto.
+- Los touch targets de las 26 velitas son de ~30-34px (por debajo del ideal de 44px) para que quepan
+  sin scroll en pantallas angostas; alcanzables con teclado y touch en las pruebas realizadas.
 
 ## Intervención manual pendiente
 
-**Ninguna.** GitHub Pages ya está configurado con `build_type: workflow` (no hace falta tocar
-Settings → Pages manualmente) y el sitio está desplegado y verificado.
+**Ninguna.** Mismo repositorio, mismo `build_type: workflow` de GitHub Pages, misma URL pública.
 
 ## Restricciones de gasto
 
-No se compró nada. No se habilitaron créditos de ningún tipo. No se usó
-`ANTHROPIC_API_KEY` ni Claude Console — todo el desarrollo se hizo con el uso incluido de la cuenta
-Claude Pro ya autenticada. Todas las dependencias son gratuitas y de código abierto (npm), el
-hosting es GitHub Pages (gratuito), y todos los assets visuales/sonoros son SVG y audio generados
-localmente.
+No se compró nada ni se habilitó ningún crédito o servicio pago. No se usó `ANTHROPIC_API_KEY` ni
+Claude Console. Los dos paquetes de fuentes (`@fontsource/space-grotesk`) son gratuitos, de código
+abierto, y se sirven desde el propio build (sin CDN). Todo el sonido nuevo es Web Audio API generado
+localmente; no se descargó ningún archivo de audio.
