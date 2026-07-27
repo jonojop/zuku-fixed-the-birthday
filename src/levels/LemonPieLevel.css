@@ -1,0 +1,114 @@
+.pie-scene {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pie-illustration {
+  width: 100%;
+  max-width: 340px;
+}
+
+.pie-smoke circle {
+  fill: rgba(248, 243, 231, 0.4);
+  animation: pie-smoke-rise 2.4s ease-out infinite;
+}
+
+@keyframes pie-smoke-rise {
+  0% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+}
+
+.pie-caption {
+  color: var(--terminal-green);
+  font-size: 0.8rem;
+}
+
+.lemon-counter {
+  color: var(--gold);
+}
+
+.candles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+  gap: 6px;
+}
+
+.candle-btn {
+  aspect-ratio: 1;
+  min-width: 30px;
+  min-height: 30px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(248, 243, 231, 0.2);
+  background: rgba(9, 11, 19, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.candle-flame {
+  width: 8px;
+  height: 12px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: rgba(248, 243, 231, 0.2);
+}
+
+.candle-btn-lit {
+  border-color: var(--gold);
+  background: rgba(214, 168, 75, 0.12);
+}
+
+.candle-btn-lit .candle-flame {
+  background: linear-gradient(180deg, #ffe08a, var(--red-jp));
+  box-shadow: 0 0 8px rgba(255, 200, 80, 0.8);
+  animation: candle-flicker 0.6s ease-in-out infinite;
+}
+
+@keyframes candle-flicker {
+  0%,
+  100% {
+    transform: scaleY(1) scaleX(1);
+  }
+  50% {
+    transform: scaleY(1.15) scaleX(0.9);
+  }
+}
+
+.button-builder {
+  gap: var(--space-3);
+}
+
+.builder-part {
+  gap: 6px;
+}
+
+.builder-part-label {
+  color: var(--gold);
+  font-size: 0.8rem;
+}
+
+.builder-part-done {
+  color: var(--terminal-green);
+  font-size: 0.85rem;
+}
+
+.builder-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.blow-button {
+  margin-top: var(--space-2);
+  font-size: 1rem;
+  padding: 16px;
+}
