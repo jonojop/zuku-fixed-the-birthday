@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useGameDispatch, useGameState } from '../context/GameContext'
+import { playCorrect, playIncorrect } from '../utils/sound'
 import type { FixDefinition, LevelId } from '../types/game'
 
 export type FixFeedback = 'idle' | 'correct' | 'incorrect'
@@ -11,6 +12,8 @@ export interface FixSequenceApi {
   hintVisible: boolean
   revealAnswer: boolean
   feedback: FixFeedback
+  /** The option id the last submit() targeted — lets the UI flash that exact button. */
+  lastSubmittedId: string | null
   isComplete: boolean
   submit: (optionId: string) => void
   showHint: () => void
@@ -27,6 +30,7 @@ export function useFixSequence(levelId: LevelId, fixes: FixDefinition[], onAllCo
   const [hintVisible, setHintVisible] = useState(false)
   const [revealAnswer, setRevealAnswer] = useState(false)
   const [feedback, setFeedback] = useState<FixFeedback>('idle')
+  const [lastSubmittedId, setLastSubmittedId] = useState<string | null>(null)
 
   const isComplete = fixIndex >= fixes.length
   const currentFix = fixes[fixIndex] ?? null
@@ -42,9 +46,11 @@ export function useFixSequence(levelId: LevelId, fixes: FixDefinition[], onAllCo
       if (!currentFix || feedback !== 'idle') return
       const option = currentFix.options.find((o) => o.id === optionId)
       if (!option) return
+      setLastSubmittedId(optionId)
 
       if (option.correct) {
         setFeedback('correct')
+        playCorrect()
         dispatch({ type: 'APPLY_FIX', levelId })
         window.setTimeout(() => {
           setFeedback('idle')
@@ -60,6 +66,7 @@ export function useFixSequence(levelId: LevelId, fixes: FixDefinition[], onAllCo
         }, delay)
       } else {
         setFeedback('incorrect')
+        playIncorrect()
         setAttempts((a) => {
           const next = a + 1
           if (next === 2) showHint()
@@ -72,5 +79,5 @@ export function useFixSequence(levelId: LevelId, fixes: FixDefinition[], onAllCo
     [currentFix, feedback, dispatch, levelId, fixIndex, fixes.length, onAllComplete, delay, showHint]
   )
 
-  return { currentFix, fixIndex, attempts, hintVisible, revealAnswer, feedback, isComplete, submit, showHint }
+  return { currentFix, fixIndex, attempts, hintVisible, revealAnswer, feedback, lastSubmittedId, isComplete, submit, showHint }
 }

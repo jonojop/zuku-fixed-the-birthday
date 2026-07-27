@@ -78,3 +78,47 @@
     background: rgba(214, 168, 75, 0.18);
   }
 }
+
+.editor-option-mark {
+  margin-left: auto;
+  font-family: var(--font-mono);
+}
+
+.editor-option-flash-correct {
+  border-color: var(--terminal-green);
+  background: rgba(117, 240, 167, 0.15);
+  box-shadow: 0 0 0 1px rgba(117, 240, 167, 0.5);
+}
+
+.editor-option-flash-correct .editor-option-mark {
+  color: var(--terminal-green);
+}
+
+.editor-option-flash-incorrect {
+  border-color: var(--red-jp);
+  background: rgba(230, 57, 70, 0.12);
+  animation: editor-option-shake 0.35s ease;
+}
+
+.editor-option-flash-incorrect .editor-option-mark {
+  color: var(--red-jp);
+}
+
+@keyframes editor-option-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor-option-flash-incorrect {
+    animation: none;
+  }
+}
