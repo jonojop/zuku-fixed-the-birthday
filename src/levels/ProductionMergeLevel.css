@@ -1,0 +1,45 @@
+.merge-scene {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  font-size: 0.8rem;
+}
+
+.merge-block {
+  background: #05060a;
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  border: 1px solid rgba(230, 57, 70, 0.4);
+}
+
+.merge-block-resolved {
+  border-color: rgba(117, 240, 167, 0.4);
+  color: var(--terminal-green);
+}
+
+.merge-marker {
+  color: var(--red-jp);
+}
+
+.merge-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: rgba(248, 243, 231, 0.5);
+}
+
+.merge-step-done {
+  color: var(--terminal-green);
+}
+
+.merge-badge {
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--terminal-green);
+  color: var(--terminal-green);
+}

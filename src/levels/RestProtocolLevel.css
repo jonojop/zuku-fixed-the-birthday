@@ -1,0 +1,34 @@
+.rest-scene {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.rest-svg {
+  width: 100%;
+  max-width: 340px;
+}
+
+.rest-chair-hidden {
+  opacity: 0;
+}
+
+.rest-chair-visible {
+  opacity: 1;
+}
+
+.rest-chair,
+.rest-body {
+  transition: transform 0.5s ease;
+}
+
+.rest-monitor-glow {
+  transition: opacity 0.5s ease;
+}
+
+.rest-scene-caption {
+  color: var(--terminal-green);
+  font-size: 0.75rem;
+}

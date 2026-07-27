@@ -1,0 +1,97 @@
+.css-scene {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.css-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  padding: 10px;
+  background: rgba(230, 57, 70, 0.08);
+  border: 1px dashed var(--red-jp);
+  transition:
+    width 0.4s ease,
+    align-items 0.4s ease,
+    border-radius 0.4s ease,
+    padding 0.4s ease;
+  width: 100%;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.css-card-avatar {
+  width: 120px;
+  height: 40px;
+  border-radius: 0;
+  background: var(--sakura);
+  flex-shrink: 0;
+  transition:
+    width 0.4s ease,
+    height 0.4s ease,
+    border-radius 0.4s ease;
+}
+
+.css-card-title {
+  font-size: 0.7rem;
+  color: rgba(248, 243, 231, 0.5);
+}
+
+.css-card-text {
+  font-size: 0.75rem;
+  overflow: visible;
+}
+
+.css-card-button {
+  padding: 2px 4px;
+  font-size: 0.65rem;
+  border-radius: 2px;
+  border: 1px solid var(--red-jp);
+  background: transparent;
+  color: var(--white-warm);
+  align-self: flex-start;
+}
+
+/* stage 1: align-items centered */
+.css-scene-stage-1 .css-card,
+.css-scene-stage-2 .css-card,
+.css-scene-stage-3 .css-card,
+.css-scene-stage-4 .css-card {
+  align-items: center;
+  text-align: center;
+}
+
+/* stage 2: width constrained */
+.css-scene-stage-2 .css-card,
+.css-scene-stage-3 .css-card,
+.css-scene-stage-4 .css-card {
+  width: min(320px, 100%);
+  border-style: solid;
+}
+
+/* stage 3+: proper avatar shape (object-fit analog) */
+.css-scene-stage-3 .css-card-avatar,
+.css-scene-stage-4 .css-card-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+
+/* stage 4: fully restored elegant card */
+.css-scene-stage-4 .css-card {
+  background: linear-gradient(160deg, rgba(214, 168, 75, 0.12), rgba(9, 11, 19, 0.4));
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  gap: var(--space-2);
+}
+
+.css-scene-stage-4 .css-card-button {
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  border-radius: var(--radius-md);
+  border-color: var(--gold);
+  color: var(--gold);
+}

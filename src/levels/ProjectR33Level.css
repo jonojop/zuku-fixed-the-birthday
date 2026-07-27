@@ -1,0 +1,56 @@
+.r33-scene {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.r33-box,
+.r33-car {
+  width: 100%;
+  max-width: 340px;
+}
+
+.r33-scene-complete .r33-car {
+  animation: r33-cam-pan 5s ease-in-out infinite;
+}
+
+@keyframes r33-cam-pan {
+  0%,
+  100% {
+    transform: scale(1) translateX(0);
+  }
+  50% {
+    transform: scale(1.03) translateX(-4px);
+  }
+}
+
+.r33-wheel {
+  transition: r 0.4s ease;
+}
+
+.r33-headlight-on {
+  filter: drop-shadow(0 0 6px var(--gold));
+}
+
+.r33-exhaust-glow {
+  animation: r33-pulse 1s ease-in-out infinite;
+}
+
+@keyframes r33-pulse {
+  0%,
+  100% {
+    opacity: 0.15;
+    r: 7;
+  }
+  50% {
+    opacity: 0.4;
+    r: 10;
+  }
+}
+
+.r33-caption {
+  color: var(--terminal-green);
+  font-size: 0.8rem;
+}

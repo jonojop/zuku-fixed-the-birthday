@@ -1,0 +1,42 @@
+.handball-scene {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.handball-court {
+  width: 100%;
+  max-width: 360px;
+}
+
+.handball-goal,
+.handball-player,
+.handball-ball {
+  transition:
+    x 0.5s ease,
+    y 0.5s ease,
+    cx 0.5s ease,
+    cy 0.5s ease,
+    opacity 0.4s ease;
+}
+
+.handball-memory {
+  text-align: center;
+  align-items: center;
+}
+
+.handball-memory-text {
+  color: var(--white-warm);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.handball-photo {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(214, 168, 75, 0.4);
+}
