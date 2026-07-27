@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useAsset } from '../hooks/useAssetManifest'
 import { useGameState } from '../context/GameContext'
 import { NALA_MESSAGES } from '../content/gameContent'
-import { playNalaJump } from '../utils/sound'
+import { playNalaTransition } from '../utils/sound'
 import './NalaCelebration.css'
 
 interface NalaCelebrationProps {
@@ -12,11 +12,14 @@ interface NalaCelebrationProps {
 
 export function NalaCelebration({ levelTitle, onContinue }: NalaCelebrationProps) {
   const state = useGameState()
-  const { url: nalaPhoto } = useAsset('nala')
+  const { url: nalaPlayingPhoto, loading: loadingPlaying } = useAsset('nala-playing')
+  const { url: nalaPhoto, loading: loadingNala } = useAsset('nala')
+  const photo = nalaPlayingPhoto ?? nalaPhoto
+  const loading = loadingPlaying || loadingNala
   const message = useMemo(() => NALA_MESSAGES[(state.levelsCompleted.length - 1 + NALA_MESSAGES.length) % NALA_MESSAGES.length], [state.levelsCompleted.length])
 
   useEffect(() => {
-    playNalaJump()
+    playNalaTransition()
     const duration = state.skipAnimations ? 200 : 2600
     const timer = window.setTimeout(onContinue, duration)
     return () => window.clearTimeout(timer)
@@ -25,8 +28,21 @@ export function NalaCelebration({ levelTitle, onContinue }: NalaCelebrationProps
   return (
     <div className="nala-celebration app-shell" role="status" aria-live="polite">
       <div className="nala-stage">
-        {nalaPhoto ? (
-          <img src={nalaPhoto} alt="Nala" className="nala-photo" />
+        <div className="nala-pawprints" aria-hidden="true">
+          <span className="nala-pawprint" />
+          <span className="nala-pawprint" />
+          <span className="nala-pawprint" />
+        </div>
+
+        {loading ? (
+          <p className="nala-loading mono" aria-hidden="true">
+            loading Nala…
+          </p>
+        ) : photo ? (
+          <div className="nala-photo-frame">
+            <img src={photo} alt="Nala" className="nala-photo" />
+            <span className="nala-tag-chip mono">Nala</span>
+          </div>
         ) : (
           <svg viewBox="0 0 200 160" className="nala-svg" aria-hidden="true">
             <ellipse cx="100" cy="145" rx="70" ry="8" fill="#000" opacity="0.25" />
