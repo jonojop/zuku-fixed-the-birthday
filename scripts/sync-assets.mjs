@@ -54,34 +54,53 @@ function run() {
       .filter((name) => ALLOWED_EXT.has(trueExtension(name)))
       .sort()
 
-    if (candidates.length === 0) {
-      manifest.assets[key] = { found: false }
-      continue
+    if (candidates.length > 0) {
+      const chosen = candidates[0]
+      const ext = trueExtension(chosen)
+      const outputName = `${key}${ext}`
+
+      try {
+        copyFileSync(join(SOURCE_DIR, chosen), join(OUTPUT_DIR, outputName))
+        manifest.assets[key] = {
+          found: true,
+          sourceFile: chosen,
+          publicPath: `assets/${outputName}`,
+          extension: ext,
+          animated: ext === '.gif',
+          extraMatches: candidates.length > 1 ? candidates.slice(1) : undefined,
+        }
+        continue
+      } catch (error) {
+        manifest.assets[key] = { found: false, error: String(error?.message ?? error) }
+        continue
+      }
     }
 
-    const chosen = candidates[0]
-    const ext = trueExtension(chosen)
-    const outputName = `${key}${ext}`
-
-    try {
-      copyFileSync(join(SOURCE_DIR, chosen), join(OUTPUT_DIR, outputName))
+    // Nothing in assets-input this run (e.g. a CI checkout, where that folder
+    // is intentionally gitignored) — but if a previously-synced copy is still
+    // sitting in public/assets/ (committed on purpose so the site can publish
+    // it), keep reporting it as found instead of clobbering a working asset.
+    const alreadySynced = [...ALLOWED_EXT].find((ext) => existsSync(join(OUTPUT_DIR, `${key}${ext}`)))
+    if (alreadySynced) {
       manifest.assets[key] = {
         found: true,
-        sourceFile: chosen,
-        publicPath: `assets/${outputName}`,
-        extension: ext,
-        animated: ext === '.gif',
-        extraMatches: candidates.length > 1 ? candidates.slice(1) : undefined,
+        sourceFile: null,
+        publicPath: `assets/${key}${alreadySynced}`,
+        extension: alreadySynced,
+        animated: alreadySynced === '.gif',
       }
-    } catch (error) {
-      manifest.assets[key] = { found: false, error: String(error?.message ?? error) }
+    } else {
+      manifest.assets[key] = { found: false }
     }
   }
 
   writeFileSync(join(OUTPUT_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2))
 
   const summary = Object.entries(manifest.assets)
-    .map(([key, info]) => `  - ${key}: ${info.found ? `OK (${info.sourceFile})` : 'not found (fallback will be used)'}`)
+    .map(([key, info]) => {
+      if (!info.found) return `  - ${key}: not found (fallback will be used)`
+      return info.sourceFile ? `  - ${key}: OK (${info.sourceFile})` : `  - ${key}: OK (already synced, no source in assets-input this run)`
+    })
     .join('\n')
   console.log(`[sync-assets] Recognized assets:\n${summary}`)
 }
